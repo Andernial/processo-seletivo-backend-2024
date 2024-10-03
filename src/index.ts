@@ -1,4 +1,4 @@
-import { ApolloServer } from "@apollo/server";
+import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 const port = 4000;
 
@@ -15,33 +15,32 @@ const typeDefs = `
 `;
 
 const messages = [
-    {
-        message: 'Hello World!'
-    },
-    {
-        message: "First Apollo StandaloneServer!"
-    },
-    {
-        message: "Welcome Again!"
-    }
-]
+  {
+    message: 'Hello World!',
+  },
+  {
+    message: 'First Apollo StandaloneServer!',
+  },
+  {
+    message: 'Welcome Again!',
+  },
+];
 
 const resolvers = {
-    Query: {
-        hello: () => messages[0].message,
-        messages: () => messages,
-        getMessage: (_, { index }) => messages[index],
-
-    },
-}
+  Query: {
+    hello: () => messages[0].message,
+    messages: () => messages,
+    getMessage: (_, { index }) => messages[index],
+  },
+};
 
 const server = new ApolloServer({
-    typeDefs,
-    resolvers,
+  typeDefs,
+  resolvers,
 });
 
 const { url } = await startStandaloneServer(server, {
-    listen: { port },
+  listen: { port },
 });
 
 console.log(`🚀 Server ready at: ${url}`);
