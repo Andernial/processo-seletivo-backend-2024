@@ -7,7 +7,6 @@ This project is being developed as a part of a recruitment process and this desc
 
 For now the project is a simple graphql API built with apollo server. When running it locally its possible to make three simple test querys (more detailed explanations can be found in the 'Steps to run and debug' section).
 
-
 ## 👾Environment and tools
 - [VS Code](https://code.visualstudio.com/)
 - [NodeJS](https://nodejs.org/en)
@@ -20,7 +19,6 @@ For now the project is a simple graphql API built with apollo server. When runni
 - [Docker](https://www.docker.com/)
 - [Postgres](https://www.postgresql.org/)
 - [Prisma](https://www.prisma.io/)
-
 
 ## 🏃🏻‍♀️​Steps to run and debug
 ### Cloning the Repository to your machine
@@ -70,6 +68,7 @@ docker compose stop
 ```
 docker compose down
 ```
+
 ### Running Prisma Migrations
 After running the local database you can run the migrations saved on **prisma/migrations** file
 
@@ -93,7 +92,6 @@ npm run lint
 ```
 ```
 npm run lint -- --fix
-
 ```
 - execute **npm start** on your terminal to compile the ts script and start the graphql with apollo server
 - execute **npm run dev** on your terminal to start nodemon (you still have to execute the command **npx tsc --watch** in another terminal to use nodemon + typescript)
