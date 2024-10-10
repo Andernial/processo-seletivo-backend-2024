@@ -4,9 +4,11 @@
       "outDir": "dist",
       "lib": ["es2020"],
       "target": "es2020",
-      "module": "esnext",
-      "moduleResolution": "node",
+      "module": "NodeNext", // this rule was changed to make the compilation easier when importing modules on ts files.
+      "moduleResolution": "NodeNext", // this rule was changed to make the compilation easier when importing modules on ts files.
       "esModuleInterop": true,
-      "types": ["node"]
+      "forceConsistentCasingInFileNames": true, // this rule was added to maintain consistency in file names.
+      "types": ["node"],
+      "strict": true // this rule was added to fortify the Type checking of my code.
     }
   }
