@@ -1,12 +1,15 @@
 import { PrismaClient, User } from '@prisma/client';
-import { UserInput } from '../intefaces/interfaces.js';
-
+import { UserInput } from '../zod-schema/user-validation.js';
+import { UserValidationSchema } from '../zod-schema/user-validation.js';
+import { GraphQLError } from 'graphql';
 const prisma = new PrismaClient();
 
 export class UserService {
   async createUserService(params: UserInput): Promise<User> {
-    const { name, email, password, birthDate } = params;
     try {
+      UserValidationSchema.parse(params);
+
+      const { name, email, password, birthDate } = params;
       const newUser = await prisma.user.create({
         data: {
           name,
@@ -19,7 +22,9 @@ export class UserService {
       return newUser;
     } catch (error) {
       console.log(error);
-      throw error;
+      throw new GraphQLError('Erro Ao Criar Usuário', {
+        extensions: { code: 'Internal_Server_Error' },
+      });
     }
   }
 

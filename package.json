@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module", 
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "compile": "tsc",
@@ -31,6 +31,7 @@
     "@apollo/server": "4.11.0",
     "@prisma/client": "5.20.0",
     "dotenv": "16.4.5",
-    "graphql": "16.9.0"
+    "graphql": "16.9.0",
+    "zod": "3.23.8"
   }
 }
