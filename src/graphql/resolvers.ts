@@ -1,48 +1,23 @@
-const messages = [
-  {
-    message: 'Hello World!',
-  },
-  {
-    message: 'First Apollo StandaloneServer!',
-  },
-  {
-    message: 'Welcome Again!',
-  },
-];
-
-const users: UserInput[] = [];
-
-interface UserInput {
-  id: number;
-  name: string;
-  email: string;
-  password: string;
-  birthDate: string;
-}
+import { UserService } from '../services/user-service.js';
+import { UserInput } from '../intefaces/interfaces.js';
+const instanceOfUserService = new UserService();
 
 export const resolvers = {
   Query: {
-    hello: () => messages[0].message,
-    messages: () => messages,
-    getMessage: (_: unknown, { index }: { index: number }) => messages[index],
-    users: () => users,
+    users: async () => {
+      const users = await instanceOfUserService.showUsersService();
+      return users;
+    },
   },
 
   Mutation: {
-    createUser: (_: unknown, { input }: { input: UserInput }) => {
-      const newUser: UserInput = {
-        id: users.length > 0 ? users[users.length - 1].id + 1 : users.length + 1,
-        name: input.name,
-        email: input.email,
-        password: input.password,
-        birthDate: input.birthDate,
-      };
-      users.push(newUser);
+    createUser: async (_: unknown, { input }: { input: UserInput }) => {
+      const createNewUser = await instanceOfUserService.createUserService(input);
       return {
-        id: newUser.id,
-        name: newUser.name,
-        email: newUser.email,
-        birthDate: newUser.birthDate,
+        id: createNewUser.id,
+        name: createNewUser.name,
+        email: createNewUser.email,
+        birthDate: createNewUser.birthDate,
       };
     },
   },

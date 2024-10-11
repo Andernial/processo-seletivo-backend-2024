@@ -1,8 +1,4 @@
 export const typeDefs = `#graphql
-   type Message {
-    message: String
-   }
-
    type User {
     id: ID!
     name: String!
@@ -22,9 +18,6 @@ export const typeDefs = `#graphql
    }
 
    type Query {
-    hello: String
-    messages: [Message]
-    getMessage(index: Int!): Message
     users: [User!]!
   }
 `;
