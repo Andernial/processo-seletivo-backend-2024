@@ -1,13 +1,16 @@
+import * as argon2 from 'argon2';
 import { PrismaClient, User } from '@prisma/client';
 import { UserInput } from '../zod-schema/user-validation.js';
 import { UserValidationSchema } from '../zod-schema/user-validation.js';
 import { GraphQLError } from 'graphql';
+
 const prisma = new PrismaClient();
 
 export class UserService {
   async createUserService(params: UserInput): Promise<User> {
     try {
       UserValidationSchema.parse(params);
+      params.password = await argon2.hash(params.password);
 
       const { name, email, password, birthDate } = params;
       const newUser = await prisma.user.create({
