@@ -2,14 +2,14 @@
   "name": "processo-seletivo-backend-2024",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "type": "module",
   "scripts": {
     "migrate:postgres": "dotenv -e test.env -- npx prisma migrate deploy",
     "test": "dotenv -e test.env -- mocha ./dist/test/",
     "compile": "tsc",
-    "start": "npm run compile && node ./dist/server.js",
-    "dev": "npm run compile && nodemon ./dist/server.js",
+    "start": "npm run compile && node ./dist/src/server.js",
+    "dev": "npm run compile && nodemon ./dist/src/server.js",
     "lint": "eslint"
   },
   "keywords": [],
