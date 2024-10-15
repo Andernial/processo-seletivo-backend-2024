@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "mocha ./dist/test/",
+    "migrate:postgres": "dotenv -e test.env -- npx prisma migrate deploy",
+    "test": "dotenv -e test.env -- mocha ./dist/test/",
     "compile": "tsc",
     "start": "npm run compile && node ./dist/server.js",
     "dev": "npm run compile && nodemon ./dist/server.js",
@@ -21,6 +22,7 @@
     "@types/node": "22.7.4",
     "axios": "1.7.7",
     "chai": "5.1.1",
+    "dotenv-cli": "7.4.2",
     "eslint": "9.11.1",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-prettier": "5.2.1",
