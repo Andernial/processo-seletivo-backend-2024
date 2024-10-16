@@ -87,4 +87,76 @@ describe('server test', function () {
     const firstUser = allUsers.users[0];
     expect(firstUser).to.have.all.keys('id', 'name', 'email', 'birthDate');
   });
+
+  it('it should return errors while trying to create a user with a already taken email', async () => {
+    const mutation = {
+      query: `mutation CreateUser($createUserInput: UserInput!) {
+          createUser(input: $createUserInput) {
+            birthDate
+            email
+            id
+            name
+          }
+        }`,
+      variables: {
+        createUserInput: {
+          name: 'usuario',
+          email: 'usuario@example.com',
+          password: '45687a',
+          birthDate: '2003-01-01',
+        },
+      },
+    };
+    await axios.post(serverUrl, mutation, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const response = await axios.post(serverUrl, mutation, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const responseData = response.data.errors[0];
+    expect(responseData.message).to.equal('BAD_USER_INPUT');
+    expect(responseData.extensions.code).to.equal('400');
+    expect(responseData.extensions.message).to.equal('email is already taken');
+  });
+
+  it('it should return errors while trying to create a user with invalid inputs', async () => {
+    const mutation = {
+      query: `mutation CreateUser($createUserInput: UserInput!) {
+          createUser(input: $createUserInput) {
+            birthDate
+            email
+            id
+            name
+          }
+        }`,
+      variables: {
+        createUserInput: {
+          name: 'usuario',
+          email: 'usuario@example.com',
+          password: '21',
+          birthDate: '2003-01-01',
+        },
+      },
+    };
+
+    const response = await axios.post(serverUrl, mutation, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const responseData = response.data.errors[0];
+    expect(responseData.message).to.equal('BAD_USER_INPUT');
+    expect(responseData.extensions.code).to.equal('400');
+    expect(responseData.extensions.additionalInfo[0].message).to.equal('Senha deve conter pelo menos 6 caracteres');
+    expect(responseData.extensions.additionalInfo[1].message).to.equal(
+      'A senha deve conter pelo menos 1 letra e um número',
+    );
+  });
 });
