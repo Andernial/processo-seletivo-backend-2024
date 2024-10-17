@@ -35,7 +35,7 @@ describe('server test', function () {
     await prisma.user.deleteMany();
   });
 
-  this.beforeEach(async () => {
+  beforeEach(async () => {
     await prisma.user.create({
       data: {
         name: 'usuario',
