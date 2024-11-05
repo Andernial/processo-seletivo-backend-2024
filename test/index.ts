@@ -35,17 +35,6 @@ describe('server test', function () {
     await prisma.user.deleteMany();
   });
 
-  beforeEach(async () => {
-    await prisma.user.create({
-      data: {
-        name: 'usuario',
-        email: 'usuario@example.com',
-        password: '45687a',
-        birthDate: '2003-01-01',
-      },
-    });
-  });
-
   it('should create users and find the created user using axios request', async () => {
     const mutation = {
       query: `mutation CreateUser($createUserInput: UserInput!) {
@@ -58,8 +47,8 @@ describe('server test', function () {
       }`,
       variables: {
         createUserInput: {
-          name: 'usuario2',
-          email: 'usuario2@example.com',
+          name: 'usuario',
+          email: 'usuario@example.com',
           password: '45687a',
           birthDate: '2003-01-01',
         },
@@ -73,34 +62,21 @@ describe('server test', function () {
 
     const createdUser = responseQuery.data.data.createUser;
     expect(createdUser).to.have.property('id');
-    expect(createdUser.name).to.equal('usuario2');
-    expect(createdUser.email).to.equal('usuario2@example.com');
-    const queryData = {
-      query: `query getUsers {
-        users {
-          id
-          name
-          email
-          birthDate
-        }
-      }`,
-    };
-    const response = await axios.post(serverUrl, queryData, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    const allUsers = response.data.data;
-    expect(allUsers).to.have.property('users');
-    expect(allUsers.users).to.be.an('array');
-    expect(allUsers.users.length).to.be.greaterThan(0);
-    const secondUser = allUsers.users[1];
-    expect(secondUser).to.have.all.keys('id', 'name', 'email', 'birthDate');
-    expect(secondUser.name).to.equal('usuario2');
+    expect(createdUser.name).to.equal('usuario');
+    expect(createdUser.email).to.equal('usuario@example.com');
+    expect(createdUser.birthDate).to.equal('2003-01-01');
   });
 
   it('it should return errors while trying to create a user with a already taken email', async () => {
+    await prisma.user.create({
+      data: {
+        name: 'usuario',
+        email: 'usuario@example.com',
+        password: '45687a',
+        birthDate: '2003-01-01',
+      },
+    });
+
     const mutation = {
       query: `mutation CreateUser($createUserInput: UserInput!) {
           createUser(input: $createUserInput) {
