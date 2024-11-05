@@ -61,6 +61,12 @@ describe('server test', function () {
     });
 
     const createdUser = responseQuery.data.data.createUser;
+    const userInBank = await prisma.user.findFirst({
+      where: {
+        email: 'usuario@example.com',
+      },
+    });
+    expect(userInBank?.email).to.equal('usuario@example.com');
     expect(createdUser).to.have.property('id');
     expect(createdUser.name).to.equal('usuario');
     expect(createdUser.email).to.equal('usuario@example.com');
