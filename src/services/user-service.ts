@@ -1,48 +1,65 @@
 import * as argon2 from 'argon2';
-import { PrismaClient, User } from '@prisma/client';
+import { User } from '@prisma/client';
 import { UserInput } from '../zod-schema/user-validation.js';
 import { UserValidationSchema } from '../zod-schema/user-validation.js';
 import { GraphQLError } from 'graphql';
-
-const prisma = new PrismaClient();
+import { prisma } from '../../prisma/prisma-client.js';
 
 export class UserService {
   async createUserService(params: UserInput): Promise<User> {
-    try {
-      UserValidationSchema.parse(params);
-      params.password = await argon2.hash(params.password);
+    const verification = UserValidationSchema.safeParse(params);
 
-      const { name, email, password, birthDate } = params;
-      const newUser = await prisma.user.create({
-        data: {
-          name,
-          email,
-          password,
-          birthDate,
+    if (!verification.success) {
+      const zoderrors = verification.error.errors.map((error) => ({
+        path: error.path.join('.'),
+        message: error.message,
+      }));
+
+      throw new GraphQLError('BAD_USER_INPUT: Please check the input fields and try again', {
+        extensions: {
+          code: '400',
+          additionalInfo: zoderrors,
         },
       });
+    }
 
-      return newUser;
-    } catch (error) {
-      console.log(error);
-      throw new GraphQLError('Erro Ao Criar Usuário', {
-        extensions: { code: 'Internal_Server_Error' },
+    params.password = await argon2.hash(params.password);
+    const { name, email, password, birthDate } = params;
+
+    const userExists = await prisma.user.findFirst({
+      where: {
+        email,
+      },
+    });
+
+    if (userExists) {
+      throw new GraphQLError('Registration Failed: the providen email is already taken!', {
+        extensions: {
+          code: '400',
+          additionalInfo: 'Please try again using another email',
+        },
       });
     }
+
+    const newUser = await prisma.user.create({
+      data: {
+        name,
+        email,
+        password,
+        birthDate,
+      },
+    });
+
+    return newUser;
   }
 
   async showUsersService(): Promise<User[]> {
-    try {
-      const users = await prisma.user.findMany();
+    const users = await prisma.user.findMany();
 
-      if (users.length === 0) {
-        throw new Error('Nenhum usuário encontrado');
-      }
-
-      return users;
-    } catch (error) {
-      console.log(error);
-      throw error;
+    if (users.length === 0) {
+      throw new Error('Nenhum usuário encontrado');
     }
+
+    return users;
   }
 }
