@@ -2,7 +2,7 @@ import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { typeDefs } from './graphql/type-defs.js';
 import { resolvers } from './graphql/resolvers.js';
-import { verifyToken } from './middlewares/jwtVerify.js';
+import { verifyToken } from './middlewares/jwt-verify.js';
 const port = 4000;
 
 const server = new ApolloServer({
