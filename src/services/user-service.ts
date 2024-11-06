@@ -70,7 +70,7 @@ export class UserService {
     return users;
   }
 
-  async findUserService(params: UserLogin): Promise<Login> {
+  async logInUserService(params: UserLogin): Promise<Login> {
     const { email, password, rememberMe } = params;
 
     const user = await prisma.user.findFirst({
