@@ -44,8 +44,6 @@ describe('Queries Test', function () {
     testToken = jwt.sign({ id: 1 }, process.env.SECRET_KEY ?? '', { expiresIn: '1h' });
   });
   it('should sucessifully return users if a valid token is sent', async () => {
-    // const testToken = 'token';
-
     const response = await axios.post(
       serverUrl,
       { query: query.query },
@@ -61,8 +59,6 @@ describe('Queries Test', function () {
   });
 
   it('should return error if no token is sent', async () => {
-    // const testToken = 'token';
-
     const response = await axios.post(
       serverUrl,
       { query: query.query },
@@ -77,8 +73,6 @@ describe('Queries Test', function () {
   });
 
   it('should return error if a malformed token is sent', async () => {
-    // const testToken = 'token';
-
     const response = await axios.post(
       serverUrl,
       { query: query.query },
