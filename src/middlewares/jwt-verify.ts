@@ -8,6 +8,9 @@ export const verifyToken = (token: string) => {
     throw new GraphQLError('INVALID_SESSION_TOKEN: Error invalid or expired token', {
       extensions: {
         code: '401',
+        http: {
+          status: 200,
+        },
         additionalInfo: error,
       },
     });
