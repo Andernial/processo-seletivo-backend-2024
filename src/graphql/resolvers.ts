@@ -27,7 +27,7 @@ export const resolvers = {
     },
 
     login: async (_: unknown, { input }: { input: UserLogin }) => {
-      const findUser = instanceOfUserService.logInUserService(input);
+      const findUser = await instanceOfUserService.logInUserService(input);
       return findUser;
     },
   },
