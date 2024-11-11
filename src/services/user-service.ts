@@ -73,7 +73,7 @@ export class UserService {
   async logInUserService(params: UserLoginInput): Promise<LoginReturn> {
     const { email, password, rememberMe } = params;
 
-    const user = await prisma.user.findFirst({
+    const user = await prisma.user.findUnique({
       where: {
         email,
       },
