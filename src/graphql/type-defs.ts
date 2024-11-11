@@ -24,6 +24,10 @@ export const typeDefs = `#graphql
       rememberMe: Boolean
    }
 
+   input FindUserInput{
+    id: Int!
+   }
+
    type Mutation{
     createUser(input: UserInput!): User!
     login(input: UserLogin!): Login!
@@ -31,5 +35,6 @@ export const typeDefs = `#graphql
 
    type Query {
     users: [User!]!
+    user(input: FindUserInput!): User!
   }
 `;
