@@ -80,10 +80,10 @@ export class UserService {
     });
 
     if (!user) {
-      throw new GraphQLError('USER_NOT_FOUND: cannot find any user with that email', {
+      throw new GraphQLError('USER_NOT_FOUND: cannot find any user with that email or password', {
         extensions: {
-          code: '400',
-          additionalInfo: 'Please try again using a different email',
+          code: '404',
+          additionalInfo: 'Please verify email or password and try again',
         },
       });
     }
@@ -92,10 +92,10 @@ export class UserService {
     const isPasswordHashed = await argon2.verify(hashedPassword, password);
 
     if (!isPasswordHashed) {
-      throw new GraphQLError('BAD_USER_INPUT: the providen password does not match!', {
+      throw new GraphQLError('USER_NOT_FOUND: cannot find any user with that email or password', {
         extensions: {
-          code: '400',
-          additionalInfo: 'Please try again using a different password',
+          code: '404',
+          additionalInfo: 'Please verify email or password and try again',
         },
       });
     }
