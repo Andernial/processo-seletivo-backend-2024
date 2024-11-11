@@ -80,7 +80,7 @@ export class UserService {
     });
 
     if (!user) {
-      throw new GraphQLError('USER_NOT_FOUND: cannot find any user with that email or password', {
+      throw new GraphQLError('USER_NOT_FOUND: Could not find a user with that email or password', {
         extensions: {
           code: '404',
           additionalInfo: 'Please verify email or password and try again',
