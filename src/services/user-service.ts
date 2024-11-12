@@ -1,9 +1,11 @@
 import * as argon2 from 'argon2';
 import { User } from '@prisma/client';
 import { UserInput } from '../zod-schema/user-validation.js';
+import { LoginReturn, UserLoginInput } from '../interfaces/interfaces.js';
 import { UserValidationSchema } from '../zod-schema/user-validation.js';
 import { GraphQLError } from 'graphql';
 import { prisma } from '../../prisma/prisma-client.js';
+import jwt from 'jsonwebtoken';
 
 export class UserService {
   async createUserService(params: UserInput): Promise<User> {
@@ -57,9 +59,50 @@ export class UserService {
     const users = await prisma.user.findMany();
 
     if (users.length === 0) {
-      throw new Error('Nenhum usuário encontrado');
+      throw new GraphQLError('INTERNAL_SERVER_ERROR: No users Where Found', {
+        extensions: {
+          code: '500',
+          additionalInfo: 'Please try again later or create a new user on the database',
+        },
+      });
     }
 
     return users;
+  }
+
+  async logInUserService(params: UserLoginInput): Promise<LoginReturn> {
+    const { email, password, rememberMe } = params;
+
+    const user = await prisma.user.findFirst({
+      where: {
+        email,
+      },
+    });
+
+    if (!user) {
+      throw new GraphQLError('USER_NOT_FOUND: Could not find a user with that email or password', {
+        extensions: {
+          code: '404',
+          additionalInfo: 'Please verify email or password and try again',
+        },
+      });
+    }
+
+    const hashedPassword = user?.password;
+    const isPasswordHashed = await argon2.verify(hashedPassword, password);
+
+    if (!isPasswordHashed) {
+      throw new GraphQLError('USER_NOT_FOUND: Could not find a user with that email or password', {
+        extensions: {
+          code: '404',
+          additionalInfo: 'Please verify email or password and try again',
+        },
+      });
+    }
+    const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY ?? '', { expiresIn: !rememberMe ? '8h' : '168h' });
+
+    const fullResult = { user, token };
+
+    return fullResult;
   }
 }
