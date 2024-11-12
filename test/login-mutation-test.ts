@@ -29,7 +29,7 @@ describe('Login mutation Tests', function () {
     const data = {
       name: 'usuarioLog',
       email: 'usuario@example.com',
-      password: password,
+      password,
       birthDate: '2003-01-01',
     };
 
