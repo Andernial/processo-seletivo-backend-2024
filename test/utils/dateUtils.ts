@@ -4,7 +4,7 @@ const options: Intl.DateTimeFormatOptions = {
   day: '2-digit',
   hour: '2-digit',
   minute: '2-digit',
-  hour12: false, // Se você quer usar o formato de 12 horas (AM/PM)
+  hour12: false,
   timeZone: 'UTC',
 };
 
