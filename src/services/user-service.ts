@@ -1,7 +1,7 @@
 import * as argon2 from 'argon2';
 import { User } from '@prisma/client';
 import { UserInput } from '../zod-schema/user-validation.js';
-import { Login, UserLogin } from '../interfaces/interfaces.js';
+import { LoginReturn, UserLoginInput } from '../interfaces/interfaces.js';
 import { UserValidationSchema } from '../zod-schema/user-validation.js';
 import { GraphQLError } from 'graphql';
 import { prisma } from '../../prisma/prisma-client.js';
@@ -70,7 +70,7 @@ export class UserService {
     return users;
   }
 
-  async logInUserService(params: UserLogin): Promise<Login> {
+  async logInUserService(params: UserLoginInput): Promise<LoginReturn> {
     const { email, password, rememberMe } = params;
 
     const user = await prisma.user.findFirst({

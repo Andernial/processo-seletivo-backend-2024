@@ -1,12 +1,12 @@
 import { UserInput } from '../zod-schema/user-validation.js';
 
-export interface UserLogin {
+export interface UserLoginInput {
   email: string;
   password: string;
   rememberMe?: boolean;
 }
 
-export interface Login {
+export interface LoginReturn {
   user: UserInput;
   token: string;
 }
