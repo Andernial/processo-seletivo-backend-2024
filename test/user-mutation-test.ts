@@ -25,10 +25,6 @@ const variables = {
 };
 
 describe('User Mutation Test', function () {
-  before(async () => {
-    await prisma.user.deleteMany();
-  });
-
   afterEach(async () => {
     await prisma.user.deleteMany();
   });
@@ -42,6 +38,12 @@ describe('User Mutation Test', function () {
       },
     );
 
+    const userInBank = await prisma.user.findUnique({
+      where: {
+        email: 'usuario@example.com',
+      },
+    });
+    expect(userInBank?.email).to.equal('usuario@example.com');
     const createdUser = responseQuery.data.data.createUser;
     expect(createdUser).to.have.property('id');
     expect(createdUser.name).to.equal('usuario');
@@ -77,9 +79,9 @@ describe('User Mutation Test', function () {
     const wrongVariables = {
       createUserInput: {
         name: 'usuario',
-        email: 'usuario@example.com',
+        email: 'usuarioexample',
         password: '21',
-        birthDate: '2003-01-01',
+        birthDate: '20',
       },
     };
 
@@ -92,13 +94,18 @@ describe('User Mutation Test', function () {
         },
       },
     );
-
+    expect(response.data).to.have.property('errors');
     const responseData = response.data.errors[0];
+    const responseExtensions = responseData.extensions;
     expect(responseData.message).to.equal('BAD_USER_INPUT: Please check the input fields and try again');
-    expect(responseData.extensions.code).to.equal('400');
-    expect(responseData.extensions.additionalInfo[0].message).to.equal('Senha deve conter pelo menos 6 caracteres');
-    expect(responseData.extensions.additionalInfo[1].message).to.equal(
-      'A senha deve conter pelo menos 1 letra e um número',
-    );
+    expect(responseExtensions.code).to.equal('400');
+    expect(responseExtensions.additionalInfo).to.be.an('array');
+    expect(responseExtensions.additionalInfo[0].path).to.equal('email');
+    expect(responseExtensions.additionalInfo[0].message).to.equal('Informe um email válido');
+    expect(responseExtensions.additionalInfo[1].path).to.equal('password');
+    expect(responseExtensions.additionalInfo[1].message).to.equal('Senha deve conter pelo menos 6 caracteres');
+    expect(responseExtensions.additionalInfo[2].message).to.equal('A senha deve conter pelo menos 1 letra e um número');
+    expect(responseExtensions.additionalInfo[3].path).to.equal('birthDate');
+    expect(responseExtensions.additionalInfo[3].message).to.equal('Informe uma data válida');
   });
 });
