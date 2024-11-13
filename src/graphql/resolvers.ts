@@ -27,8 +27,7 @@ export const resolvers = {
           },
         });
       }
-      const users = await instanceOfUserService.getUserByIdService(input);
-      return users;
+      return await instanceOfUserService.getUserByIdService(input);
     },
   },
 
