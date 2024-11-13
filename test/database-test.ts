@@ -7,7 +7,7 @@ describe('database test', function () {
   after(async () => {
     await prisma.user.deleteMany();
   });
-  it('should create a user in the bank and find it', async () => {
+  it('should create an user in the bank and find it', async () => {
     await prisma.user.create({
       data: {
         name: 'usuario',
