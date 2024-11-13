@@ -15,13 +15,13 @@ export const formatTokenDate = (exp: number) => {
   return tokenExpirationDate;
 };
 
-export const returnFutureDates = () => {
+export const returnExpirationDate = () => {
   const rememberMeTrue = new Date();
   rememberMeTrue.setHours(rememberMeTrue.getHours() + 168);
   const rememberMeFalse = new Date();
   rememberMeFalse.setHours(rememberMeFalse.getHours() + 8);
-  const formattedDateTrue = new Intl.DateTimeFormat('pt-BR', options).format(rememberMeTrue);
-  const formattedDateFalse = new Intl.DateTimeFormat('pt-BR', options).format(rememberMeFalse);
+  const expirationDateTokenTrue = new Intl.DateTimeFormat('pt-BR', options).format(rememberMeTrue);
+  const expirationDateTokenFalse = new Intl.DateTimeFormat('pt-BR', options).format(rememberMeFalse);
 
-  return { formattedDateTrue, formattedDateFalse };
+  return { expirationDateTokenTrue, expirationDateTokenFalse };
 };

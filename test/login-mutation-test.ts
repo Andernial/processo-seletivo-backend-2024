@@ -4,7 +4,7 @@ import * as argon2 from 'argon2';
 import { serverUrl } from './server-setup-test.js';
 import { expect } from 'chai';
 import { prisma } from './server-setup-test.js';
-import { formatTokenDate, returnFutureDates } from './utils/dateUtils.js';
+import { formatTokenDate, returnExpirationDate } from './utils/dateUtils.js';
 
 const mutation = {
   query: `mutation Login($loginInput: UserLogin!) {
@@ -60,7 +60,7 @@ describe('Login mutation Tests', function () {
       },
     );
 
-    const { formattedDateTrue } = returnFutureDates();
+    const { expirationDateTokenTrue } = returnExpirationDate();
     const responseData = response.data.data.login;
     const decodedToken = jwt.verify(responseData.token, process.env.SECRET_KEY ?? '');
     const { exp, id } = decodedToken as { exp: number; id: number };
@@ -71,7 +71,7 @@ describe('Login mutation Tests', function () {
     expect(responseData.user.email).to.equal('usuario@example.com');
     expect(responseData.user.birthDate).to.equal('2003-01-01');
     expect(responseData).to.have.property('token');
-    expect(tokenExpirationDate).to.equal(formattedDateTrue);
+    expect(tokenExpirationDate).to.equal(expirationDateTokenTrue);
     expect(decodedToken).to.have.all.keys('id', 'iat', 'exp');
     expect(id).to.equal(userId);
   });
@@ -92,7 +92,7 @@ describe('Login mutation Tests', function () {
       },
     );
 
-    const { formattedDateFalse } = returnFutureDates();
+    const { expirationDateTokenFalse } = returnExpirationDate();
     const responseData = response.data.data.login;
     const decodedToken = jwt.verify(responseData.token, process.env.SECRET_KEY ?? '');
     const { exp, id } = decodedToken as { exp: number; id: number };
@@ -103,7 +103,7 @@ describe('Login mutation Tests', function () {
     expect(responseData.user.email).to.equal('usuario@example.com');
     expect(responseData.user.birthDate).to.equal('2003-01-01');
     expect(responseData).to.have.property('token');
-    expect(tokenExpirationDate).to.equal(formattedDateFalse);
+    expect(tokenExpirationDate).to.equal(expirationDateTokenFalse);
     expect(decodedToken).to.have.all.keys('id', 'iat', 'exp');
     expect(id).to.equal(userId);
   });
