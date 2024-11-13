@@ -44,7 +44,7 @@ describe('Login mutation Tests', function () {
     await prisma.user.deleteMany();
   });
 
-  it('should login and return the correct data', async () => {
+  it('should return login information and a token that expires in 168 hours', async () => {
     const variables = {
       loginInput: {
         email: 'usuario@example.com',
@@ -61,17 +61,49 @@ describe('Login mutation Tests', function () {
     );
 
     const { formattedDateTrue } = returnFutureDates();
-    expect(response.data.data).to.have.property('login');
     const responseData = response.data.data.login;
     const decodedToken = jwt.verify(responseData.token, process.env.SECRET_KEY ?? '');
     const { exp, id } = decodedToken as { exp: number; id: number };
     const tokenExpirationDate = formatTokenDate(exp);
+    expect(response.data.data).to.have.property('login');
     expect(responseData.user).to.have.all.keys('name', 'email', 'birthDate', 'id');
     expect(responseData.user.name).to.equal('usuarioLog');
     expect(responseData.user.email).to.equal('usuario@example.com');
     expect(responseData.user.birthDate).to.equal('2003-01-01');
     expect(responseData).to.have.property('token');
     expect(tokenExpirationDate).to.equal(formattedDateTrue);
+    expect(decodedToken).to.have.all.keys('id', 'iat', 'exp');
+    expect(id).to.equal(userId);
+  });
+
+  it('should return login information and a token that expires in 8 hours', async () => {
+    const variables = {
+      loginInput: {
+        email: 'usuario@example.com',
+        rememberMe: false,
+        password: '45687a',
+      },
+    };
+    const response = await axios.post(
+      serverUrl,
+      { query: mutation.query, variables: variables },
+      {
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
+
+    const { formattedDateFalse } = returnFutureDates();
+    const responseData = response.data.data.login;
+    const decodedToken = jwt.verify(responseData.token, process.env.SECRET_KEY ?? '');
+    const { exp, id } = decodedToken as { exp: number; id: number };
+    const tokenExpirationDate = formatTokenDate(exp);
+    expect(response.data.data).to.have.property('login');
+    expect(responseData.user).to.have.all.keys('name', 'email', 'birthDate', 'id');
+    expect(responseData.user.name).to.equal('usuarioLog');
+    expect(responseData.user.email).to.equal('usuario@example.com');
+    expect(responseData.user.birthDate).to.equal('2003-01-01');
+    expect(responseData).to.have.property('token');
+    expect(tokenExpirationDate).to.equal(formattedDateFalse);
     expect(decodedToken).to.have.all.keys('id', 'iat', 'exp');
     expect(id).to.equal(userId);
   });
