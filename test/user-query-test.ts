@@ -20,7 +20,6 @@ const query = {
 
 describe('User Query test', function () {
   before(async () => {
-    await prisma.user.deleteMany();
     const newUser = await prisma.user.create({
       data: {
         name: 'usuario',
@@ -35,7 +34,11 @@ describe('User Query test', function () {
     testToken = jwt.sign({ id: newUserId }, process.env.SECRET_KEY ?? '', { expiresIn: '1h' });
   });
 
-  it('should return an user if an correct user id and token are provided', async () => {
+  after(async () => {
+    await prisma.user.deleteMany();
+  });
+
+  it('should return an user if a correct user id and token are provided', async () => {
     const variables = {
       input: {
         id: newUserId,
@@ -91,7 +94,7 @@ describe('User Query test', function () {
     );
 
     const responseData = response.data.errors[0];
-    expect(responseData.message).to.equal('ACCESS_DENIED: You need to be logged in to acess this query');
+    expect(responseData.message).to.equal('ACCESS_DENIED: You need to be logged in to access this query');
     expect(responseData.extensions.additionalInfo).to.equal('try again providing a jwt login token');
     expect(responseData.extensions.code).to.equal('401');
   });

@@ -29,7 +29,7 @@ describe('User Mutation Test', function () {
     await prisma.user.deleteMany();
   });
 
-  it('should create user using axios request', async () => {
+  it('should create a user using axios request', async () => {
     const responseQuery = await axios.post(
       serverUrl,
       { query: mutation.query, variables: variables },
@@ -51,7 +51,7 @@ describe('User Mutation Test', function () {
     expect(createdUser.birthDate).to.equal('2003-01-01');
   });
 
-  it('it should return errors while trying to create a user with a already taken email', async () => {
+  it('should return errors while trying to create a user with a already taken email', async () => {
     await prisma.user.create({
       data: {
         name: 'usuario',

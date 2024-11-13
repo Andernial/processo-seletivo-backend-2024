@@ -68,7 +68,7 @@ describe('Users Query Test', function () {
       },
     );
     const responseData = response.data.errors[0];
-    expect(responseData.message).to.equal('ACCESS_DENIED: You need to be logged in to acess this query');
+    expect(responseData.message).to.equal('ACCESS_DENIED: You need to be logged in to access this query');
     expect(responseData.extensions.additionalInfo).to.equal('try again providing a jwt login token');
     expect(responseData.extensions.code).to.equal('401');
   });
