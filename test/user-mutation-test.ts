@@ -75,7 +75,7 @@ describe('User Mutation Test', function () {
     expect(responseData.extensions.additionalInfo).to.equal('Please try again using another email');
   });
 
-  it('it should return errors while trying to create a user with invalid inputs', async () => {
+  it('should return errors while trying to create a user with invalid inputs', async () => {
     const wrongVariables = {
       createUserInput: {
         name: 'usuario',
