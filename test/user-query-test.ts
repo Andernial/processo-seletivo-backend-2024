@@ -38,7 +38,7 @@ describe('User Query test', function () {
     await prisma.user.deleteMany();
   });
 
-  it('should return an user if a correct user id and token are provided', async () => {
+  it('should return a user if a correct user id and token are provided', async () => {
     const variables = {
       input: {
         id: newUserId,
@@ -53,6 +53,7 @@ describe('User Query test', function () {
     );
 
     const responseData = response.data.data.user;
+    expect(responseData).to.have.all.keys('name', 'email', 'birthDate', 'id');
     expect(responseData).to.have.property('id');
     expect(responseData.name).to.equal('usuario');
     expect(responseData.email).to.equal('usuario@example.com');
@@ -74,7 +75,7 @@ describe('User Query test', function () {
     );
 
     const responseData = response.data.errors[0];
-    expect(responseData.message).to.equal('USER_NOT_FOUND: Could not find user with the providen id!');
+    expect(responseData.message).to.equal('USER_NOT_FOUND: Could not find user with the provided id!');
     expect(responseData.extensions.additionalInfo).to.equal('Please try again using a different id');
     expect(responseData.extensions.code).to.equal('404');
   });

@@ -2,6 +2,7 @@ import axios from 'axios';
 import { prisma, serverUrl } from './server-setup-test.js';
 import jwt from 'jsonwebtoken';
 import { expect } from 'chai';
+import { UserInput } from '../src/zod-schema/user-validation.js';
 
 let testToken: string;
 
@@ -18,7 +19,6 @@ const query = {
 
 describe('Users Query Test', function () {
   before(async () => {
-    await prisma.user.deleteMany();
     await prisma.user.createMany({
       data: [
         {
@@ -44,7 +44,10 @@ describe('Users Query Test', function () {
     testToken = jwt.sign({ id: 1 }, process.env.SECRET_KEY ?? '', { expiresIn: '1h' });
   });
 
-  it('should sucessifully return users if a valid token is sent', async () => {
+  after(async () => {
+    await prisma.user.deleteMany();
+  });
+  it('should successfully return users if a valid token is sent', async () => {
     const response = await axios.post(
       serverUrl,
       { query: query.query },
@@ -53,13 +56,17 @@ describe('Users Query Test', function () {
       },
     );
     const responseData = response.data.data.users;
-    expect(responseData).to.be.an('array');
     expect(responseData).to.have.lengthOf(3);
-    expect(responseData[0]).to.have.all.keys('id', 'name', 'email', 'birthDate');
-    expect(responseData[0].name).to.equal('usuario1');
+    expect(responseData).to.be.an('array');
+    responseData.forEach((user: UserInput, i: number) => {
+      expect(user).to.have.all.keys('id', 'name', 'email', 'birthDate');
+      expect(user.name).to.equal(`usuario${i + 1}`);
+      expect(user.email).to.equal(`usuario${i + 1}@example.com`);
+      expect(user.birthDate).to.equal(`2003-01-01`);
+    });
   });
 
-  it('should return error if no token is sent', async () => {
+  it('should return an error if no token is provided', async () => {
     const response = await axios.post(
       serverUrl,
       { query: query.query },
@@ -73,7 +80,7 @@ describe('Users Query Test', function () {
     expect(responseData.extensions.code).to.equal('401');
   });
 
-  it('should return error if a malformed token is sent', async () => {
+  it('should return an error if a malformed token is provided', async () => {
     const response = await axios.post(
       serverUrl,
       { query: query.query },

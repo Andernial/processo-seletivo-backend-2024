@@ -116,7 +116,7 @@ export class UserService {
     });
 
     if (!user) {
-      throw new GraphQLError('USER_NOT_FOUND: Could not find user with the providen id!', {
+      throw new GraphQLError('USER_NOT_FOUND: Could not find user with the provided id!', {
         extensions: {
           code: '404',
           additionalInfo: 'Please try again using a different id',
