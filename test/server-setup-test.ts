@@ -34,6 +34,7 @@ before(async () => {
 });
 
 after(async () => {
+  await prisma.user.deleteMany();
   await prisma.$disconnect();
   await server.stop();
 });

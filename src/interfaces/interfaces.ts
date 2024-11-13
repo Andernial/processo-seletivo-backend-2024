@@ -16,3 +16,7 @@ export interface Token {
   iat?: number;
   exp?: number;
 }
+
+export interface FindUserInput {
+  id: number;
+}

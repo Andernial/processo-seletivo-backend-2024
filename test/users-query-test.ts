@@ -17,7 +17,7 @@ const query = {
   }`,
 };
 
-describe('Queries Test', function () {
+describe('Users Query Test', function () {
   before(async () => {
     await prisma.user.createMany({
       data: [
@@ -47,7 +47,7 @@ describe('Queries Test', function () {
   after(async () => {
     await prisma.user.deleteMany();
   });
-  it('should sucessfully return users if a valid token is sent', async () => {
+  it('should successfully return users if a valid token is sent', async () => {
     const response = await axios.post(
       serverUrl,
       { query: query.query },
@@ -66,7 +66,7 @@ describe('Queries Test', function () {
     });
   });
 
-  it('should return error if no token is sent', async () => {
+  it('should return an error if no token is provided', async () => {
     const response = await axios.post(
       serverUrl,
       { query: query.query },
@@ -80,7 +80,7 @@ describe('Queries Test', function () {
     expect(responseData.extensions.code).to.equal('401');
   });
 
-  it('should return error if a malformed token is sent', async () => {
+  it('should return an error if a malformed token is provided', async () => {
     const response = await axios.post(
       serverUrl,
       { query: query.query },

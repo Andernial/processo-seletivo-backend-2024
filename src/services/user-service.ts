@@ -1,7 +1,7 @@
 import * as argon2 from 'argon2';
 import { User } from '@prisma/client';
 import { UserInput } from '../zod-schema/user-validation.js';
-import { LoginReturn, UserLoginInput } from '../interfaces/interfaces.js';
+import { FindUserInput, LoginReturn, UserLoginInput } from '../interfaces/interfaces.js';
 import { UserValidationSchema } from '../zod-schema/user-validation.js';
 import { GraphQLError } from 'graphql';
 import { prisma } from '../../prisma/prisma-client.js';
@@ -28,7 +28,7 @@ export class UserService {
     params.password = await argon2.hash(params.password);
     const { name, email, password, birthDate } = params;
 
-    const userExists = await prisma.user.findFirst({
+    const userExists = await prisma.user.findUnique({
       where: {
         email,
       },
@@ -73,7 +73,7 @@ export class UserService {
   async logInUserService(params: UserLoginInput): Promise<LoginReturn> {
     const { email, password, rememberMe } = params;
 
-    const user = await prisma.user.findFirst({
+    const user = await prisma.user.findUnique({
       where: {
         email,
       },
@@ -104,5 +104,26 @@ export class UserService {
     const fullResult = { user, token };
 
     return fullResult;
+  }
+
+  async getUserByIdService(params: FindUserInput): Promise<User> {
+    const { id } = params;
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!user) {
+      throw new GraphQLError('USER_NOT_FOUND: Could not find user with the provided id!', {
+        extensions: {
+          code: '404',
+          additionalInfo: 'Please try again using a different id',
+        },
+      });
+    }
+
+    return user;
   }
 }
