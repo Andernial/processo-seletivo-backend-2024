@@ -1,11 +1,18 @@
 import * as argon2 from 'argon2';
+import jwt from 'jsonwebtoken';
 import { User } from '@prisma/client';
 import { UserInput } from '../zod-schema/user-validation.js';
-import { FindUserInput, LoginReturn, UserLoginInput } from '../interfaces/interfaces.js';
 import { UserValidationSchema } from '../zod-schema/user-validation.js';
 import { GraphQLError } from 'graphql';
 import { prisma } from '../../prisma/prisma-client.js';
-import jwt from 'jsonwebtoken';
+import {
+  Cursor,
+  FindUserInput,
+  FindUsersInput,
+  LoginReturn,
+  UserLoginInput,
+  UsersQueryReturn,
+} from '../interfaces/interfaces.js';
 
 export class UserService {
   async createUserService(params: UserInput): Promise<User> {
@@ -55,8 +62,30 @@ export class UserService {
     return newUser;
   }
 
-  async showUsersService(): Promise<User[]> {
-    const users = await prisma.user.findMany();
+  async showUsersService(params: FindUsersInput = { quantity: 10 }): Promise<UsersQueryReturn> {
+    const { quantity, cursor } = params;
+
+    function decodeOject(cursor: string) {
+      try {
+        const jsonString = Buffer.from(cursor, 'base64').toString();
+        return JSON.parse(jsonString) as Cursor;
+      } catch {
+        throw new GraphQLError('INVALID_CURSOR: Invalid or malformed cursor string', {
+          extensions: {
+            code: '400',
+            additionalInfo: 'Please provide a valid cursor string',
+          },
+        });
+      }
+    }
+
+    const decodedString = cursor ? decodeOject(cursor) : null;
+    const users = await prisma.user.findMany({
+      orderBy: [{ name: 'asc' }, { id: 'asc' }],
+      take: quantity ? quantity : 10,
+      skip: cursor ? 1 : undefined,
+      cursor: decodedString ? { name_id: { name: decodedString.name, id: decodedString.id } } : undefined,
+    });
 
     if (users.length === 0) {
       throw new GraphQLError('INTERNAL_SERVER_ERROR: No users Where Found', {
@@ -67,7 +96,33 @@ export class UserService {
       });
     }
 
-    return users;
+    const lastUserInQuery = users[users.length - 1];
+    const newCursor = { name: lastUserInQuery.name, id: lastUserInQuery.id };
+    const stringNewCursor = JSON.stringify(newCursor);
+    const encodedNewCursor = Buffer.from(stringNewCursor).toString('base64');
+
+    const nextPage = await prisma.user.findMany({
+      orderBy: [{ name: 'asc' }, { id: 'asc' }],
+      take: quantity ? quantity : 10,
+      skip: 1,
+      cursor: { name_id: { name: newCursor.name, id: newCursor.id } },
+    });
+
+    const usersTotal = await prisma.user.count();
+
+    const hasNextPage = nextPage.length > 0 ? true : false;
+    const hasPreviousPage = cursor ? true : false;
+    const data = {
+      usersData: users,
+      pageInfo: {
+        hasNextPage,
+        hasPreviousPage,
+        nextCursor: hasNextPage ? encodedNewCursor : undefined,
+      },
+      usersTotal,
+    };
+
+    return data;
   }
 
   async logInUserService(params: UserLoginInput): Promise<LoginReturn> {

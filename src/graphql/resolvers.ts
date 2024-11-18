@@ -1,12 +1,12 @@
 import { GraphQLError } from 'graphql';
-import { FindUserInput, Token, UserLoginInput } from '../interfaces/interfaces.js';
+import { FindUserInput, FindUsersInput, Token, UserLoginInput } from '../interfaces/interfaces.js';
 import { UserService } from '../services/user-service.js';
 import { UserInput } from '../zod-schema/user-validation.js';
 const instanceOfUserService = new UserService();
 
 export const resolvers = {
   Query: {
-    users: async (_: unknown, _unusedInput: unknown, contextValue: Token) => {
+    users: async (_: unknown, { input }: { input: FindUsersInput }, contextValue: Token) => {
       if (!contextValue.id) {
         throw new GraphQLError('ACCESS_DENIED: You need to be logged in to access this query', {
           extensions: {
@@ -15,7 +15,7 @@ export const resolvers = {
           },
         });
       }
-      return await instanceOfUserService.showUsersService();
+      return await instanceOfUserService.showUsersService(input);
     },
 
     user: async (_: unknown, { input }: { input: FindUserInput }, contextValue: Token) => {
