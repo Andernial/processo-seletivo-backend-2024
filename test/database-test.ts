@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
-
 import { prisma } from './server-setup-test.js';
 import { generateFakeUsers } from '../prisma/seed.js';
 
@@ -33,8 +32,7 @@ describe('database test', function () {
 
   it('should seed the database', async () => {
     const data = generateFakeUsers(10);
-    await prisma.user.createMany({ data });
-    const createdUsers = await prisma.user.findMany();
+    const createdUsers = await prisma.user.createManyAndReturn({ data });
 
     expect(data).to.have.length(10);
     createdUsers.forEach((user, i) => {

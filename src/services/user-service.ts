@@ -5,8 +5,8 @@ import { UserInput } from '../zod-schema/user-validation.js';
 import { UserValidationSchema } from '../zod-schema/user-validation.js';
 import { GraphQLError } from 'graphql';
 import { prisma } from '../../prisma/prisma-client.js';
+import { base64Encode, decodeObject } from '../utils/encoder-utils.js';
 import {
-  Cursor,
   FindUserInput,
   FindUsersInput,
   LoginReturn,
@@ -65,21 +65,7 @@ export class UserService {
   async showUsersService(params: FindUsersInput = { quantity: 10 }): Promise<UsersQueryReturn> {
     const { quantity, cursor } = params;
 
-    function decodeOject(cursor: string) {
-      try {
-        const jsonString = Buffer.from(cursor, 'base64').toString();
-        return JSON.parse(jsonString) as Cursor;
-      } catch {
-        throw new GraphQLError('INVALID_CURSOR: Invalid or malformed cursor string', {
-          extensions: {
-            code: '400',
-            additionalInfo: 'Please provide a valid cursor string',
-          },
-        });
-      }
-    }
-
-    const decodedString = cursor ? decodeOject(cursor) : null;
+    const decodedString = cursor ? decodeObject(cursor) : null;
     const users = await prisma.user.findMany({
       orderBy: [{ name: 'asc' }, { id: 'asc' }],
       take: quantity ? quantity : 10,
@@ -97,15 +83,13 @@ export class UserService {
     }
 
     const lastUserInQuery = users[users.length - 1];
-    const newCursor = { name: lastUserInQuery.name, id: lastUserInQuery.id };
-    const stringNewCursor = JSON.stringify(newCursor);
-    const encodedNewCursor = Buffer.from(stringNewCursor).toString('base64');
+    const encodedNewCursor = base64Encode({ name: lastUserInQuery.name, id: lastUserInQuery.id });
 
     const nextPage = await prisma.user.findMany({
       orderBy: [{ name: 'asc' }, { id: 'asc' }],
       take: quantity ? quantity : 10,
       skip: 1,
-      cursor: { name_id: { name: newCursor.name, id: newCursor.id } },
+      cursor: { name_id: { name: lastUserInQuery.name, id: lastUserInQuery.id } },
     });
 
     const usersTotal = await prisma.user.count();

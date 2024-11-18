@@ -4,7 +4,7 @@ import * as argon2 from 'argon2';
 import { serverUrl } from './server-setup-test.js';
 import { expect } from 'chai';
 import { prisma } from './server-setup-test.js';
-import { formatTokenDate, returnExpirationDate } from './utils/dateUtils.js';
+import { formatTokenDate, returnExpirationDate } from '../src/utils/date-utils.js';
 
 const mutation = {
   query: `mutation Login($loginInput: UserLogin!) {
