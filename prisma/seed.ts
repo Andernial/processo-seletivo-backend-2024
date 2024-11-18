@@ -2,9 +2,9 @@ import { PrismaClient } from '@prisma/client';
 import { faker } from '@faker-js/faker';
 const prisma = new PrismaClient();
 
-function generateFakeUsers() {
+export function generateFakeUsers(numberOfUsers: number = 50) {
   const user = [];
-  for (let i = 0; i < 50; i++) {
+  for (let i = 0; i < numberOfUsers; i++) {
     const date = faker.date.birthdate();
     const dateString = date.toISOString().split('T')[0];
     const newUser = {
