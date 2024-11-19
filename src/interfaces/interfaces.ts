@@ -13,6 +13,17 @@ export interface UserLoginInput {
   rememberMe?: boolean;
 }
 
+export interface AddressInput {
+  userId: number;
+  cep: string;
+  street: string;
+  streetNumber: string;
+  complement?: string;
+  neighborhood: string;
+  city: string;
+  state: string;
+}
+
 export interface UsersQueryReturn {
   usersData: User[];
   pageInfo: PageInfo;

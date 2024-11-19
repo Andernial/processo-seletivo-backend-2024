@@ -1,8 +1,10 @@
 import { GraphQLError } from 'graphql';
-import { FindUserInput, FindUsersInput, Token, UserLoginInput } from '../interfaces/interfaces.js';
-import { UserService } from '../services/user-service.js';
+import { AddressInput, FindUserInput, FindUsersInput, Token, UserLoginInput } from '../interfaces/interfaces.js';
+import { UserService } from '../services/User-service.js';
 import { UserInput } from '../zod-schema/user-validation.js';
+import { AddressService } from '../services/Address-service.js';
 const instanceOfUserService = new UserService();
+const instanceOfAddressService = new AddressService();
 
 export const resolvers = {
   Query: {
@@ -32,6 +34,20 @@ export const resolvers = {
   },
 
   Mutation: {
+    createAddress: async (_: unknown, { input }: { input: AddressInput }, contextValue: Token) => {
+      if (!contextValue.id) {
+        throw new GraphQLError('ACCESS_DENIED: You need to be logged in to access this query', {
+          extensions: {
+            code: '401',
+            additionalInfo: 'try again providing a jwt login token',
+          },
+        });
+      }
+
+      input.userId = contextValue.id;
+      return await instanceOfAddressService.createAddressService(input);
+    },
+
     createUser: async (_: unknown, { input }: { input: UserInput }) => {
       return await instanceOfUserService.createUserService(input);
     },

@@ -16,10 +16,10 @@ import {
 
 export class UserService {
   async createUserService(params: UserInput): Promise<User> {
-    const verification = UserValidationSchema.safeParse(params);
+    const validation = UserValidationSchema.safeParse(params);
 
-    if (!verification.success) {
-      const zoderrors = verification.error.errors.map((error) => ({
+    if (!validation.success) {
+      const zoderrors = validation.error.errors.map((error) => ({
         path: error.path.join('.'),
         message: error.message,
       }));
