@@ -74,9 +74,9 @@ export class UserService {
     });
 
     if (users.length === 0) {
-      throw new GraphQLError('INTERNAL_SERVER_ERROR: No users Where Found', {
+      throw new GraphQLError('USERS_NOT_FOUND: No users Where Found', {
         extensions: {
-          code: '500',
+          code: '404',
           additionalInfo: 'Please try again later or create a new user on the database',
         },
       });
@@ -85,16 +85,15 @@ export class UserService {
     const lastUserInQuery = users[users.length - 1];
     const encodedNewCursor = base64Encode({ name: lastUserInQuery.name, id: lastUserInQuery.id });
 
-    const nextPage = await prisma.user.findMany({
+    const nextPage = await prisma.user.count({
       orderBy: [{ name: 'asc' }, { id: 'asc' }],
-      take: quantity ? quantity : 10,
       skip: 1,
       cursor: { name_id: { name: lastUserInQuery.name, id: lastUserInQuery.id } },
     });
 
     const usersTotal = await prisma.user.count();
 
-    const hasNextPage = nextPage.length > 0 ? true : false;
+    const hasNextPage = nextPage > 0 ? true : false;
     const hasPreviousPage = cursor ? true : false;
     const data = {
       usersData: users,
