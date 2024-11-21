@@ -18,8 +18,13 @@ export const typeDefs = `#graphql
     userId: Int!
    }
 
+   type UserInfo {
+    userData: User!
+    address: [Address]!
+   }
+
    type UsersInfo {
-    usersData: [User!]!
+    usersData: [UserInfo!]!
     pageInfo: PageInfo
     usersTotal: Int
    }
@@ -75,6 +80,6 @@ export const typeDefs = `#graphql
 
    type Query {
     users(input: FindUsersInput): UsersInfo!
-    user(input: FindUserInput!): User!
+    user(input: FindUserInput!): UserInfo!
   }
 `;

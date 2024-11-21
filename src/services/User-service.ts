@@ -11,6 +11,7 @@ import {
   FindUsersInput,
   LoginReturn,
   UserLoginInput,
+  UserQueryReturn,
   UsersQueryReturn,
 } from '../interfaces/interfaces.js';
 
@@ -67,7 +68,12 @@ export class UserService {
       take: quantity ? quantity : 10,
       skip: cursor ? 1 : undefined,
       cursor: decodedString ? { name_id: { name: decodedString.name, id: decodedString.id } } : undefined,
+      include: {
+        address: true,
+      },
     });
+
+    console.log(users);
 
     if (users.length === 0) {
       const data = {
@@ -94,8 +100,21 @@ export class UserService {
 
     const hasNextPage = nextPage > 0 ? true : false;
     const hasPreviousPage = cursor ? true : false;
+
+    const arrayWithUsers: UserQueryReturn[] = users.map((user) => ({
+      userData: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        password: user.password,
+        birthDate: user.birthDate,
+      },
+      address: user.address,
+    }));
+
+    console.log(arrayWithUsers);
     const data = {
-      usersData: users,
+      usersData: arrayWithUsers,
       pageInfo: {
         hasNextPage,
         hasPreviousPage,
@@ -143,12 +162,15 @@ export class UserService {
     return fullResult;
   }
 
-  async getUserByIdService(params: FindUserInput): Promise<User> {
+  async getUserByIdService(params: FindUserInput): Promise<UserQueryReturn> {
     const { id } = params;
 
     const user = await prisma.user.findUnique({
       where: {
         id,
+      },
+      include: {
+        address: true,
       },
     });
 
@@ -161,6 +183,17 @@ export class UserService {
       });
     }
 
-    return user;
+    const userInfo = {
+      userData: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        password: user.password,
+        birthDate: user.birthDate,
+      },
+      address: user.address,
+    };
+
+    return userInfo;
   }
 }
