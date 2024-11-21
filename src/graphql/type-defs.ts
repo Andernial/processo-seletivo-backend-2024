@@ -6,6 +6,18 @@ export const typeDefs = `#graphql
     birthDate: String!
    }
 
+   type UsersInfo {
+    usersData: [User!]!
+    pageInfo: PageInfo
+    usersTotal: Int
+   }
+
+   type PageInfo {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean
+    nextCursor: String
+   }
+
    type Login {
      user: User!
      token: String!
@@ -19,13 +31,18 @@ export const typeDefs = `#graphql
    }
 
    input UserLogin{
-      email: String!
-      password: String!
-      rememberMe: Boolean
+    email: String!
+    password: String!  
+    rememberMe: Boolean
    }
 
    input FindUserInput{
     id: Int!
+   }
+
+   input FindUsersInput{
+    cursor: String
+    quantity: Int
    }
 
    type Mutation{
@@ -34,7 +51,7 @@ export const typeDefs = `#graphql
    }
 
    type Query {
-    users: [User!]!
+    users(input: FindUsersInput): UsersInfo!
     user(input: FindUserInput!): User!
   }
 `;

@@ -13,4 +13,6 @@ model User {
   name    String
   password String
   birthDate String
+
+  @@unique([name,id])
 }

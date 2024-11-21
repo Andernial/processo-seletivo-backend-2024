@@ -1,10 +1,10 @@
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
-
 import { prisma } from './server-setup-test.js';
+import { generateFakeUsers } from '../prisma/seed.js';
 
 describe('database test', function () {
-  after(async () => {
+  afterEach(async () => {
     await prisma.user.deleteMany();
   });
   it('should create an user in the bank and find it', async () => {
@@ -28,5 +28,19 @@ describe('database test', function () {
     expect(userInBank?.email).to.equal('usuario@example.com');
     expect(userInBank?.birthDate).to.equal('2003-01-01');
     expect(userInBank?.password).to.equal('45687a');
+  });
+
+  it('should seed the database', async () => {
+    const data = generateFakeUsers(10);
+    const createdUsers = await prisma.user.createManyAndReturn({ data });
+
+    expect(data).to.have.length(10);
+    createdUsers.forEach((user, i) => {
+      expect(user).to.have.all.keys('id', 'name', 'email', 'birthDate', 'password');
+      expect(user.name).to.equal(data[i].name);
+      expect(user.email).to.equal(data[i].email);
+      expect(user.password).to.equal(data[i].password);
+      expect(user.birthDate).to.equal(data[i].birthDate);
+    });
   });
 });
