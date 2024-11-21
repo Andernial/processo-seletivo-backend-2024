@@ -35,25 +35,28 @@ export const AddressValidationSchema = z.object({
   cep: z.string().length(9, 'O cep deve conter 8 digitos e seguir o formato 00000-000'),
   street: z
     .string()
-    .min(10, 'O nome da rua deve conter ao menos 10 caracteres')
+    .min(10, 'O nome da rua deve conter pelo menos 10 caracteres')
     .max(35, 'O nome da rua deve conter no máximo 35 caracteres'),
-  streetNumber: z.string().max(50, 'O número da rua deve conter no máximo 50 caracteres'),
+  streetNumber: z
+    .string()
+    .min(1, 'O número deve conter pelo menos 1 caractere')
+    .max(50, 'O número da rua deve conter no máximo 50 caracteres'),
   complement: z
     .nullable(
       z
         .string()
-        .min(5, 'O complemento deve conter ao menos 5 caracteres')
+        .min(5, 'O complemento deve conter pelo menos 5 caracteres')
         .max(50, 'O complemento deve conter no máximo 50 caracteres'),
     )
     .optional(),
 
   neighborhood: z
     .string()
-    .min(4, 'O bairro deve conter ao menos 4 caracteres')
+    .min(4, 'O bairro deve conter pelo menos 4 caracteres')
     .max(60, 'O bairro deve conter no máximo 60 caracteres'),
   city: z
     .string()
-    .min(4, 'A cidade deve conter ao menos 4 caracteres')
+    .min(4, 'A cidade deve conter pelo menos 4 caracteres')
     .max(60, 'A cidade deve conter no máximo 60 caracteres'),
   state: z.nativeEnum(estados, {
     errorMap: () => {
@@ -61,3 +64,5 @@ export const AddressValidationSchema = z.object({
     },
   }),
 });
+
+export type AddressInput = z.infer<typeof AddressValidationSchema>;

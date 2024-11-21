@@ -27,6 +27,6 @@ model Address{
   neighborhood String
   city String
   state String
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int
 }

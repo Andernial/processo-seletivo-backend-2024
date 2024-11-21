@@ -1,5 +1,5 @@
 import { Address } from '@prisma/client';
-import { AddressInput } from '../interfaces/interfaces.js';
+import { AddressInput } from '../zod-schema/address-validation.js';
 import { prisma } from '../../prisma/prisma-client.js';
 import { GraphQLError } from 'graphql';
 import { AddressValidationSchema } from '../zod-schema/address-validation.js';
@@ -35,7 +35,7 @@ export class AddressService {
       throw new GraphQLError('USER_NOT_FOUND: Could not find a user with the current id', {
         extensions: {
           code: '404',
-          additionalInfo: 'Try again later',
+          additionalInfo: 'Try again with a valid login',
         },
       });
     }

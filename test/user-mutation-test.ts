@@ -106,6 +106,8 @@ describe('User Mutation Test', function () {
     expect(responseExtensions.additionalInfo[1].message).to.equal('Senha deve conter pelo menos 6 caracteres');
     expect(responseExtensions.additionalInfo[2].message).to.equal('A senha deve conter pelo menos 1 letra e um número');
     expect(responseExtensions.additionalInfo[3].path).to.equal('birthDate');
-    expect(responseExtensions.additionalInfo[3].message).to.equal('Informe uma data válida');
+    expect(responseExtensions.additionalInfo[3].message).to.equal(
+      'Informe uma data válida seguindo o formato 0000-00-00',
+    );
   });
 });

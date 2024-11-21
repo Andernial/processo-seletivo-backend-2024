@@ -15,6 +15,7 @@ export const typeDefs = `#graphql
     neighborhood: String!
     city: String!
     state: String!
+    userId: Int!
    }
 
    type UsersInfo {

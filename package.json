@@ -5,7 +5,8 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "migrate:postgres": "dotenv -e test.env -- npx prisma migrate",
+    "migrate:postgres": "dotenv -e test.env -- npx prisma migrate deploy --skip-seed",
+    "reset:postgres": "dotenv -e test.env -- npx prisma migrate reset --skip-seed",
     "test": "dotenv -e test.env -- mocha ./dist/test/",
     "compile": "tsc",
     "start": "npm run compile && node ./dist/src/server.js",

@@ -1,7 +1,8 @@
 import { GraphQLError } from 'graphql';
-import { AddressInput, FindUserInput, FindUsersInput, Token, UserLoginInput } from '../interfaces/interfaces.js';
+import { FindUserInput, FindUsersInput, Token, UserLoginInput } from '../interfaces/interfaces.js';
 import { UserService } from '../services/User-service.js';
 import { UserInput } from '../zod-schema/user-validation.js';
+import { AddressInput } from '../zod-schema/address-validation.js';
 import { AddressService } from '../services/Address-service.js';
 const instanceOfUserService = new UserService();
 const instanceOfAddressService = new AddressService();
