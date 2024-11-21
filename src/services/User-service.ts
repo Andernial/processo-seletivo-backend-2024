@@ -73,8 +73,6 @@ export class UserService {
       },
     });
 
-    console.log(users);
-
     if (users.length === 0) {
       const data = {
         usersData: [],
@@ -112,7 +110,6 @@ export class UserService {
       address: user.address,
     }));
 
-    console.log(arrayWithUsers);
     const data = {
       usersData: arrayWithUsers,
       pageInfo: {

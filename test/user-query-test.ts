@@ -3,17 +3,32 @@ import { prisma, serverUrl } from './server-setup-test.js';
 import { describe, it } from 'mocha';
 import jwt from 'jsonwebtoken';
 import { expect } from 'chai';
+import { Address, User } from '@prisma/client';
 
 let testToken: string;
-let newUserId: number;
+let testUser: User;
+let testAddress: Address;
 
 const query = {
-  query: `query User($input: FindUserInput!) {
-  user(input: $input) {
-    id
-    name
-    email
-    birthDate
+  query: `query User($userId: FindUserInput!) {
+  user(input: $userId) {
+    userData {
+      id
+      name
+      email
+      birthDate
+    } 
+    address {
+      id
+      city
+      complement
+      cep
+      neighborhood
+      state
+      street
+      userId
+      streetNumber
+    }
   }
 }`,
 };
@@ -29,19 +44,32 @@ describe('User Query test', function () {
       },
     });
 
-    newUserId = newUser.id;
+    testUser = newUser;
 
-    testToken = jwt.sign({ id: newUserId }, process.env.SECRET_KEY ?? '', { expiresIn: '1h' });
+    const newAddress = await prisma.address.create({
+      data: {
+        cep: '12345-678',
+        city: 'São Paulo',
+        neighborhood: 'Vila Mariana',
+        state: 'São Paulo',
+        street: 'Rua dos Três Irmãos',
+        streetNumber: '123',
+        userId: testUser.id,
+      },
+    });
+    testAddress = newAddress;
+    testToken = jwt.sign({ id: testUser.id }, process.env.SECRET_KEY ?? '', { expiresIn: '1h' });
   });
 
   after(async () => {
     await prisma.user.deleteMany();
+    await prisma.address.deleteMany();
   });
 
-  it('should return a user if a correct user id and token are provided', async () => {
+  it('should return a user and address if a correct user id and token are provided', async () => {
     const variables = {
-      input: {
-        id: newUserId,
+      userId: {
+        id: testUser.id,
       },
     };
     const response = await axios.post(
@@ -52,18 +80,67 @@ describe('User Query test', function () {
       },
     );
 
-    const responseData = response.data.data.user;
-    expect(responseData).to.have.all.keys('name', 'email', 'birthDate', 'id');
-    expect(responseData).to.have.property('id');
-    expect(responseData.name).to.equal('usuario');
-    expect(responseData.email).to.equal('usuario@example.com');
-    expect(responseData.birthDate).to.equal('2003-01-01');
+    const responseUser = response.data.data.user.userData;
+    const responseAddress = response.data.data.user.address[0];
+    expect(responseUser).to.have.all.keys('name', 'email', 'birthDate', 'id');
+    expect(responseUser).to.have.property('id');
+    expect(responseUser.id).to.equal(testUser.id);
+    expect(responseUser.name).to.equal(testUser.name);
+    expect(responseUser.email).to.equal(testUser.email);
+    expect(responseUser.birthDate).to.equal(testUser.birthDate);
+
+    expect(responseAddress).to.have.all.keys(
+      'id',
+      'cep',
+      'street',
+      'streetNumber',
+      'complement',
+      'neighborhood',
+      'city',
+      'userId',
+      'state',
+    );
+    expect(responseAddress.cep).to.equal(testAddress.cep);
+    expect(responseAddress.street).to.equal(testAddress.street);
+    expect(responseAddress.streetNumber).to.equal(testAddress.streetNumber);
+    expect(responseAddress.complement).to.equal(testAddress.complement);
+    expect(responseAddress.neighborhood).to.equal(testAddress.neighborhood);
+    expect(responseAddress.city).to.equal(testAddress.city);
+    expect(responseAddress.userId).to.equal(testAddress.userId);
+    expect(responseAddress.state).to.equal(testAddress.state);
+  });
+
+  it('should return a user and empty address if a correct user id and token are provided', async () => {
+    await prisma.address.deleteMany();
+    const variables = {
+      userId: {
+        id: testUser.id,
+      },
+    };
+    const response = await axios.post(
+      serverUrl,
+      { query: query.query, variables },
+      {
+        headers: { 'Content-Type': 'application/json', Authorization: testToken },
+      },
+    );
+
+    const responseUser = response.data.data.user.userData;
+    const responseAddress = response.data.data.user.address;
+    expect(responseUser).to.have.all.keys('name', 'email', 'birthDate', 'id');
+    expect(responseUser).to.have.property('id');
+    expect(responseUser.id).to.equal(testUser.id);
+    expect(responseUser.name).to.equal(testUser.name);
+    expect(responseUser.email).to.equal(testUser.email);
+    expect(responseUser.birthDate).to.equal(testUser.birthDate);
+
+    expect(responseAddress).length(0);
   });
 
   it('should return an error if an incorrect user id is provided', async () => {
     const variables = {
-      input: {
-        id: 1,
+      userId: {
+        id: 90000,
       },
     };
     const response = await axios.post(
@@ -82,8 +159,8 @@ describe('User Query test', function () {
 
   it('should return an error if no token is provided', async () => {
     const variables = {
-      input: {
-        id: newUserId,
+      userId: {
+        id: testUser.id,
       },
     };
     const response = await axios.post(
@@ -102,8 +179,8 @@ describe('User Query test', function () {
 
   it('should return an error if a malformed token is provided', async () => {
     const variables = {
-      input: {
-        id: newUserId,
+      userId: {
+        id: testUser.id,
       },
     };
     const response = await axios.post(
