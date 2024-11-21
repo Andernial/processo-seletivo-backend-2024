@@ -45,7 +45,7 @@ describe('Address mutation test', function () {
   });
 
   it('should create an address user using axios request', async () => {
-    await prisma.user.create({
+    const testUser = await prisma.user.create({
       data: {
         name: 'usuario',
         email: 'usuario@example.com',
@@ -54,13 +54,7 @@ describe('Address mutation test', function () {
       },
     });
 
-    const userInBank = await prisma.user.findUnique({
-      where: {
-        email: 'usuario@example.com',
-      },
-    });
-
-    const testToken = jwt.sign({ id: userInBank?.id }, process.env.SECRET_KEY ?? '', { expiresIn: '1h' });
+    const testToken = jwt.sign({ id: testUser.id }, process.env.SECRET_KEY ?? '', { expiresIn: '1h' });
     const response = await axios.post(
       serverUrl,
       { query: mutation.query, variables: variables },
@@ -69,7 +63,15 @@ describe('Address mutation test', function () {
       },
     );
 
-    expect(userInBank?.email).to.equal('usuario@example.com');
+    const addressInBank = await prisma.address.findMany({
+      where: {
+        userId: testUser.id,
+      },
+    });
+
+    expect(testUser?.email).to.equal('usuario@example.com');
+    expect(addressInBank).to.be.an('array');
+    expect(addressInBank).to.have.length(1);
     const address = response.data.data.createAddress;
     expect(address).to.have.all.keys(
       'id',
@@ -82,14 +84,14 @@ describe('Address mutation test', function () {
       'streetNumber',
       'userId',
     );
-    expect(address.cep).to.equal('12345-678');
-    expect(address.city).to.equal('São Paulo');
-    expect(address.complement).to.equal(null);
-    expect(address.neighborhood).to.equal('Vila Mariana');
-    expect(address.state).to.equal('São Paulo');
-    expect(address.street).to.equal('Rua dos Três Irmãos');
-    expect(address.streetNumber).to.equal('123');
-    expect(address.userId).to.equal(userInBank?.id);
+    expect(address.cep).to.equal(addressInBank[0].cep);
+    expect(address.city).to.equal(addressInBank[0].city);
+    expect(address.complement).to.equal(addressInBank[0].complement);
+    expect(address.neighborhood).to.equal(addressInBank[0].neighborhood);
+    expect(address.state).to.equal(addressInBank[0].state);
+    expect(address.street).to.equal(addressInBank[0].street);
+    expect(address.streetNumber).to.equal(addressInBank[0].streetNumber);
+    expect(address.userId).to.equal(testUser?.id);
   });
 
   it('should return errors while trying to create an address with a user that is not in the database', async () => {
