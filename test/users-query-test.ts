@@ -163,6 +163,28 @@ describe('Users Query Test', function () {
     expect(response.data.data.users.usersTotal).to.equal(30);
   });
 
+  it('should return the an empty array of users if no users are found', async () => {
+    await prisma.user.deleteMany();
+
+    const response = await axios.post(
+      serverUrl,
+      { query: query.query },
+      {
+        headers: { 'Content-Type': 'application/json', Authorization: testToken },
+      },
+    );
+
+    const responseUsersData = response.data.data.users.usersData;
+    const responsePageInfo = response.data.data.users.pageInfo;
+
+    expect(responseUsersData).to.have.length(0);
+    expect(responsePageInfo).to.have.keys('hasNextPage', 'hasPreviousPage', 'nextCursor');
+    expect(responsePageInfo.hasNextPage).to.equal(false);
+    expect(responsePageInfo.hasPreviousPage).to.equal(false);
+    expect(responsePageInfo.nextCursor).to.equal(null);
+    expect(response.data.data.users.usersTotal).to.equal(0);
+  });
+
   it('should return an error if a invalid or malformed cursor is provided', async () => {
     const variables = {
       usersInput: {

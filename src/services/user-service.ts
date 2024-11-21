@@ -66,6 +66,7 @@ export class UserService {
     const { quantity, cursor } = params;
 
     const decodedString = cursor ? decodeObject(cursor) : null;
+    const usersTotal = await prisma.user.count();
     const users = await prisma.user.findMany({
       orderBy: [{ name: 'asc' }, { id: 'asc' }],
       take: quantity ? quantity : 10,
@@ -74,12 +75,17 @@ export class UserService {
     });
 
     if (users.length === 0) {
-      throw new GraphQLError('USERS_NOT_FOUND: No users Where Found', {
-        extensions: {
-          code: '404',
-          additionalInfo: 'Please try again later or create a new user on the database',
+      const data = {
+        usersData: [],
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+          nextCursor: undefined,
         },
-      });
+        usersTotal,
+      };
+
+      return data;
     }
 
     const lastUserInQuery = users[users.length - 1];
@@ -90,8 +96,6 @@ export class UserService {
       skip: 1,
       cursor: { name_id: { name: lastUserInQuery.name, id: lastUserInQuery.id } },
     });
-
-    const usersTotal = await prisma.user.count();
 
     const hasNextPage = nextPage > 0 ? true : false;
     const hasPreviousPage = cursor ? true : false;
