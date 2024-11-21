@@ -56,7 +56,7 @@ describe('Users Query Test', function () {
       userId: user.id,
     }));
 
-    await prisma.address.createManyAndReturn({
+    await prisma.address.createMany({
       data: manyAddress,
     });
 
