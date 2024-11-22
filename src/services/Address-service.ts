@@ -6,7 +6,7 @@ import { AddressValidationSchema } from '../zod-schema/address-validation.js';
 
 export class AddressService {
   async createAddressService(params: AddressInput): Promise<Address> {
-    const { cep, street, streetNumber, complement, neighborhood, city, state, userId } = params;
+    const { userId } = params;
 
     const validation = AddressValidationSchema.safeParse(params);
 
@@ -41,7 +41,7 @@ export class AddressService {
     }
 
     const newAddress = await prisma.address.create({
-      data: { cep, street, streetNumber, complement, neighborhood, city, state, userId },
+      data: params,
     });
 
     return newAddress;

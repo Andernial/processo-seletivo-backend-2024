@@ -33,7 +33,7 @@ export class UserService {
     }
 
     params.password = await argon2.hash(params.password);
-    const { name, email, password, birthDate } = params;
+    const { email } = params;
 
     const userExists = await prisma.user.findUnique({
       where: {
@@ -51,12 +51,7 @@ export class UserService {
     }
 
     const newUser = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password,
-        birthDate,
-      },
+      data: params,
     });
 
     return newUser;

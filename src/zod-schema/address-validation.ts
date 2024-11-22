@@ -32,21 +32,21 @@ enum estados {
 
 export const AddressValidationSchema = z.object({
   userId: z.number(),
-  cep: z.string().length(9, 'O cep deve conter 8 digitos e seguir o formato 00000-000'),
+  cep: z.string().length(9, 'O cep deve conter 8 dígitos e seguir o formato 00000-000'),
   street: z
     .string()
     .min(10, 'O nome da rua deve conter pelo menos 10 caracteres')
-    .max(35, 'O nome da rua deve conter no máximo 35 caracteres'),
+    .max(255, 'O nome da rua deve conter no máximo 255 caracteres'),
   streetNumber: z
     .string()
     .min(1, 'O número deve conter pelo menos 1 caractere')
-    .max(50, 'O número da rua deve conter no máximo 50 caracteres'),
+    .max(10, 'O número da rua deve conter no máximo 10 caracteres'),
   complement: z
     .nullable(
       z
         .string()
         .min(5, 'O complemento deve conter pelo menos 5 caracteres')
-        .max(50, 'O complemento deve conter no máximo 50 caracteres'),
+        .max(60, 'O complemento deve conter no máximo 60 caracteres'),
     )
     .optional(),
 
@@ -60,7 +60,7 @@ export const AddressValidationSchema = z.object({
     .max(60, 'A cidade deve conter no máximo 60 caracteres'),
   state: z.nativeEnum(estados, {
     errorMap: () => {
-      return { message: 'Selecione um dos estados do brasil!' };
+      return { message: 'Selecione um dos estados do Brasil!' };
     },
   }),
 });

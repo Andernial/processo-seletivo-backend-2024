@@ -1,7 +1,7 @@
 import { z } from 'zod';
-// não é o propósito do pull request mas adicionei pequenas validações a mais aqui
+
 export const UserValidationSchema = z.object({
-  name: z.string().min(4, 'Nome deve conter ao menos 4 caracteres').max(20, 'Nome deve conter no máximo 20 caracteres'),
+  name: z.string().min(4, 'Nome deve conter ao menos 4 caracteres').max(70, 'Nome deve conter no máximo 70 caracteres'),
   email: z.string().email({ message: 'Informe um email válido' }),
   password: z
     .string()
