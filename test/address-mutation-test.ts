@@ -40,7 +40,7 @@ describe('Address mutation test', function () {
     fakeToken = jwt.sign({ id: 1 }, process.env.SECRET_KEY ?? '', { expiresIn: '1h' });
   });
 
-  after(async () => {
+  afterEach(async () => {
     await prisma.user.deleteMany();
   });
 
@@ -57,7 +57,7 @@ describe('Address mutation test', function () {
     const testToken = jwt.sign({ id: testUser.id }, process.env.SECRET_KEY ?? '', { expiresIn: '1h' });
     const response = await axios.post(
       serverUrl,
-      { query: mutation.query, variables: variables },
+      { query: mutation.query, variables },
       {
         headers: { 'Content-Type': 'application/json', Authorization: testToken },
       },
@@ -97,7 +97,7 @@ describe('Address mutation test', function () {
   it('should return errors while trying to create an address with a user that is not in the database', async () => {
     const response = await axios.post(
       serverUrl,
-      { query: mutation.query, variables: variables },
+      { query: mutation.query, variables },
       {
         headers: { 'Content-Type': 'application/json', Authorization: fakeToken },
       },
@@ -139,7 +139,7 @@ describe('Address mutation test', function () {
     expect(responseExtensions.additionalInfo).to.be.an('array');
     expect(responseExtensions.additionalInfo[0].path).to.equal('cep');
     expect(responseExtensions.additionalInfo[0].message).to.equal(
-      'O cep deve conter 8 digitos e seguir o formato 00000-000',
+      'O cep deve conter 8 dígitos e seguir o formato 00000-000',
     );
     expect(responseExtensions.additionalInfo[1].path).to.equal('street');
     expect(responseExtensions.additionalInfo[1].message).to.equal('O nome da rua deve conter pelo menos 10 caracteres');
@@ -152,7 +152,7 @@ describe('Address mutation test', function () {
     expect(responseExtensions.additionalInfo[5].path).to.equal('city');
     expect(responseExtensions.additionalInfo[5].message).to.equal('A cidade deve conter pelo menos 4 caracteres');
     expect(responseExtensions.additionalInfo[6].path).to.equal('state');
-    expect(responseExtensions.additionalInfo[6].message).to.equal('Selecione um dos estados do brasil!');
+    expect(responseExtensions.additionalInfo[6].message).to.equal('Selecione um dos estados do Brasil!');
     expect(responseExtensions.additionalInfo[6].options).to.have.length(27);
   });
 
