@@ -16,10 +16,10 @@ import {
 
 export class UserService {
   async createUserService(params: UserInput): Promise<User> {
-    const verification = UserValidationSchema.safeParse(params);
+    const validation = UserValidationSchema.safeParse(params);
 
-    if (!verification.success) {
-      const zoderrors = verification.error.errors.map((error) => ({
+    if (!validation.success) {
+      const zoderrors = validation.error.errors.map((error) => ({
         path: error.path.join('.'),
         message: error.message,
       }));
@@ -33,7 +33,7 @@ export class UserService {
     }
 
     params.password = await argon2.hash(params.password);
-    const { name, email, password, birthDate } = params;
+    const { email } = params;
 
     const userExists = await prisma.user.findUnique({
       where: {
@@ -51,12 +51,7 @@ export class UserService {
     }
 
     const newUser = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password,
-        birthDate,
-      },
+      data: params,
     });
 
     return newUser;

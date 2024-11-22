@@ -6,6 +6,18 @@ export const typeDefs = `#graphql
     birthDate: String!
    }
 
+   type Address {
+    id: ID!
+    cep: String!
+    street: String!
+    streetNumber: String!
+    complement:  String
+    neighborhood: String!
+    city: String!
+    state: String!
+    userId: Int!
+   }
+
    type UsersInfo {
     usersData: [User!]!
     pageInfo: PageInfo
@@ -30,6 +42,16 @@ export const typeDefs = `#graphql
     birthDate: String!
    }
 
+   input AddressInput{
+    cep: String!
+    street: String!
+    streetNumber: String!
+    complement:  String
+    neighborhood: String!
+    city: String!
+    state: String!
+   }
+
    input UserLogin{
     email: String!
     password: String!  
@@ -46,6 +68,7 @@ export const typeDefs = `#graphql
    }
 
    type Mutation{
+    createAddress(input: AddressInput!): Address!
     createUser(input: UserInput!): User!
     login(input: UserLogin!): Login!
    }

@@ -13,6 +13,20 @@ model User {
   name    String
   password String
   birthDate String
+  address Address[] 
 
   @@unique([name,id])
+}
+
+model Address{
+  id Int @id @default(autoincrement())
+  cep String
+  street String
+  streetNumber String
+  complement  String?
+  neighborhood String
+  city String
+  state String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
 }
