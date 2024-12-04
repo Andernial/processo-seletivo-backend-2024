@@ -1,5 +1,5 @@
 import { Field, InputType } from 'type-graphql';
-import { AddressInputModel, estados } from '@domain/model';
+import { AddressInputModel, States } from '@domain/model';
 import { IsEnum, IsOptional, Length, IsNotEmpty, MaxLength } from 'class-validator';
 
 @InputType({ description: 'Infos to create the address' })
@@ -34,6 +34,6 @@ export class AddressInput implements AddressInputModel {
   city: string;
 
   @Field({ description: 'Address state' })
-  @IsEnum(estados, { message: `Selecione um dos estados do Brasil! opções: ${Object.values(estados).join(' | ')}` })
+  @IsEnum(States, { message: `Selecione um dos estados do Brasil! opções: ${Object.values(States).join(' | ')}` })
   state: string;
 }

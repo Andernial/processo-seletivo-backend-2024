@@ -18,9 +18,9 @@ export class CreateUserUseCase {
       );
     }
 
-    input.password = await hashPassword(input.password);
+    const hashedPassword = await hashPassword(input.password);
 
-    const user = await this.dbDataSource.insert(input);
+    const user = await this.dbDataSource.insert({ ...input, password: hashedPassword });
 
     return user;
   }

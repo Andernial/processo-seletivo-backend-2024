@@ -8,12 +8,12 @@ export interface JwtPayloadModel {
   exp: number;
 }
 
-export interface MyContext {
+export interface ContextModel {
   userId: number;
   token: string;
 }
 
-export const customAuthChecker: AuthChecker<MyContext> = ({ context }) => {
+export const customAuthChecker: AuthChecker<ContextModel> = ({ context }) => {
   const token = context.token;
 
   if (!token) {

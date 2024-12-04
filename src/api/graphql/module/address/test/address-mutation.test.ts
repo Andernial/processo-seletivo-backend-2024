@@ -5,7 +5,7 @@ import { prisma } from '@test/test-server.ts/server-setup.test';
 import { axiosPost } from '@test/utils/request-maker';
 import { AddressVariable } from '@test/model';
 import { addressMutation } from '@test/queries';
-import { estados } from '@domain/model';
+import { States } from '@domain/model';
 
 let fakeToken: string;
 
@@ -117,7 +117,7 @@ describe('Address mutation test', function () {
     expect(responseData.additionalInfo[4].constraints.isNotEmpty).to.equal('O campo cidade não pode ser vazio');
     expect(responseData.additionalInfo[5].property).to.equal('state');
     expect(responseData.additionalInfo[5].constraints.isEnum).to.equal(
-      `Selecione um dos estados do Brasil! opções: ${Object.values(estados).join(' | ')}`,
+      `Selecione um dos estados do Brasil! opções: ${Object.values(States).join(' | ')}`,
     );
   });
 

@@ -55,12 +55,6 @@ export interface LoginModel {
   token: string;
 }
 
-export interface Token {
-  id?: number;
-  iat?: number;
-  exp?: number;
-}
-
 export interface CursorModel {
   name: string;
   id: number;

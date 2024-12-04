@@ -20,7 +20,7 @@ export interface AddressInputModel {
   state: string;
 }
 
-export enum estados {
+export enum States {
   Acre = 'Acre',
   Alagoas = 'Alagoas',
   Amapá = 'Amapá',
