@@ -4,6 +4,7 @@ import {
   UserAddressModel,
   UserInputModel,
   UserModel,
+  UserModelWithPassword,
   UserQueryModel,
   UsersInputModel,
   UsersQueryModel,
@@ -16,11 +17,11 @@ export class UserDbDataSource {
     return await dbClient.user.create({ data });
   }
 
-  findOneByEmail(email: string) {
+  findOneByEmail(email: string): Promise<UserModelWithPassword> {
     return dbClient.user.findUnique({ where: { email } });
   }
 
-  async findById(id: number): Promise<UserAddressModel> {
+  findById(id: number): Promise<UserAddressModel> {
     return dbClient.user.findUnique({ where: { id }, include: { address: true } });
   }
 

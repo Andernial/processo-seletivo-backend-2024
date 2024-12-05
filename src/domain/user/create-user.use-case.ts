@@ -20,8 +20,6 @@ export class CreateUserUseCase {
 
     const hashedPassword = await hashPassword(input.password);
 
-    const user = await this.dbDataSource.insert({ ...input, password: hashedPassword });
-
-    return user;
+    return await this.dbDataSource.insert({ ...input, password: hashedPassword });
   }
 }

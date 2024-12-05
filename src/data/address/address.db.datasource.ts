@@ -4,7 +4,7 @@ import { Service } from 'typedi';
 
 @Service()
 export class AddressDbDataSource {
-  async insert(data: AddressModel): Promise<AddressModel> {
-    return await dbClient.address.create({ data });
+  insert(data: AddressModel): Promise<AddressModel> {
+    return dbClient.address.create({ data });
   }
 }

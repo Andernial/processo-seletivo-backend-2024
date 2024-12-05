@@ -13,10 +13,7 @@ export class AddressResolver {
 
   @Mutation(() => Address)
   @Authorized()
-  async createAddress(
-    @Arg('data', () => AddressInput) input: AddressModel,
-    @Ctx() ctx: ContextModel,
-  ): Promise<AddressModel> {
-    return await this.createAddressUseCase.exec({ ...input, userId: ctx.userId });
+  createAddress(@Arg('data', () => AddressInput) input: AddressModel, @Ctx() ctx: ContextModel): Promise<AddressModel> {
+    return this.createAddressUseCase.exec({ ...input, userId: ctx.userId });
   }
 }

@@ -21,6 +21,14 @@ export interface UserAddressModel {
   address: AddressModel[];
 }
 
+export interface UserModelWithPassword {
+  id: number;
+  name: string;
+  email: string;
+  birthDate: string;
+  password: string;
+}
+
 export interface UserInputModel {
   name: string;
   email: string;

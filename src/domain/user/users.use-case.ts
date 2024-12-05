@@ -6,7 +6,7 @@ import { Service } from 'typedi';
 export class UsersUseCase {
   constructor(private readonly dbDataSource: UserDbDataSource) {}
 
-  async exec(input: UsersInputModel) {
-    return await this.dbDataSource.findAll(input);
+  exec(input: UsersInputModel) {
+    return this.dbDataSource.findAll(input);
   }
 }
