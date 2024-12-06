@@ -74,6 +74,7 @@ type Mutation {
   createAddress(data: AddressInput!): Address!
   createUser(data: UserInput!): User!
   login(data: LoginInput!): Login!
+  uploadCsv(file: Upload!): String!
 }
 
 """page info response object"""
@@ -93,6 +94,9 @@ type Query {
   user(id: Int!): UserQuery!
   users(data: PaginationInput): UsersQuery!
 }
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
 
 """The user model"""
 type User {
