@@ -3,21 +3,21 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
-  "type": "module",
   "scripts": {
     "migrate:postgres": "dotenv -e test.env -- npx prisma migrate deploy --skip-seed",
     "reset:postgres": "dotenv -e test.env -- npx prisma migrate reset --skip-seed",
-    "test": "dotenv -e test.env -- mocha ./dist/test/",
-    "compile": "tsc",
-    "start": "npm run compile && node ./dist/src/server.js",
-    "dev": "npm run compile && nodemon ./dist/src/server.js",
+    "test": "dotenv -e test.env -- mocha",
+    "compile": "npm run clean-dist && tsc",
+    "start": "node -r ./tsconfig-paths-dist.js ./dist/src/index.js",
+    "dev": "npm run compile && nodemon -r ./tsconfig-paths-dist.js ./dist/src/index.js",
+    "clean-dist": "rimraf ./dist || true",
     "lint": "eslint"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "prisma": {
-    "seed": "node ./dist/prisma/seed.js"
+    "seed": "node ./dist/src/data/db/seed/seed.js"
   },
   "devDependencies": {
     "@eslint/js": "9.11.1",
@@ -27,7 +27,7 @@
     "@types/mocha": "10.0.9",
     "@types/node": "22.7.4",
     "axios": "1.7.7",
-    "chai": "5.1.1",
+    "chai": "4.4.1",
     "dotenv-cli": "7.4.2",
     "eslint": "9.11.1",
     "eslint-config-prettier": "9.1.0",
@@ -37,6 +37,8 @@
     "nodemon": "3.1.7",
     "prettier": "3.3.3",
     "prisma": "5.20.0",
+    "rimraf": "6.0.1",
+    "ts-node": "10.9.2",
     "typescript": "5.5.3",
     "typescript-eslint": "8.8.0"
   },
@@ -44,9 +46,14 @@
     "@apollo/server": "4.11.0",
     "@prisma/client": "5.20.0",
     "argon2": "0.41.1",
+    "class-validator": "0.14.1",
     "dotenv": "16.4.5",
     "graphql": "16.9.0",
+    "graphql-scalars": "1.23.0",
     "jsonwebtoken": "9.0.2",
-    "zod": "3.23.8"
+    "reflect-metadata": "0.2.2",
+    "tsconfig-paths": "4.2.0",
+    "type-graphql": "2.0.0-rc.2",
+    "typedi": "0.10.0"
   }
 }

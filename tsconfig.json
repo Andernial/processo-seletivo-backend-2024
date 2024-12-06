@@ -1,14 +1,30 @@
 {
-    "compilerOptions": {
-      "rootDirs": ["src"],
-      "outDir": "dist",
-      "lib": ["es2020"],
-      "target": "es2020", 
-      "module": "NodeNext", 
-      "moduleResolution": "NodeNext", 
-      "esModuleInterop": true,
-      "forceConsistentCasingInFileNames": true, 
-      "types": ["node"],
-      "strict": true 
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "./",
+    "target": "es2022",
+    "module": "commonjs",
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "strictNullChecks": false,
+    "skipLibCheck": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@domain/": ["domain/"],
+      "@domain/*": ["domain/*"],
+      "@graphql/": ["api/graphql/"],
+      "@graphql/*": ["api/graphql/*"],
+      "@core/": ["core/"],
+      "@core/*": ["core/*"],
+      "@data/": ["data/"],
+      "@data/*": ["data/*"],
+      "@test/": ["test/"],
+      "@test/*": ["test/*"]
     }
-  }
+  },
+  "exclude": ["node_modules", "dist", "tsconfig-paths-dist.js"]
+}
