@@ -5,15 +5,13 @@ import { AlreadyExistsError, InvalidDataError } from '@core/error';
 import { generatePassword, hashPassword } from '@core/security/crypto';
 import { AddressDbDataSource } from '@data/address/address.db.datasource';
 import { UserDbDataSource } from '@data/user/user.db.datasource';
-import { CsvInputModel, UserInputModel } from '@domain/model';
-import { AddressInput } from '@graphql/module/address/input/address.input';
+import { CsvInputModel } from '@domain/model';
 import { validate } from 'class-validator';
 import { FileUpload } from 'graphql-upload-ts';
 import path from 'path';
 import { Service } from 'typedi';
-
 @Service()
-export class CsvUseCase {
+export class CreateManyUsersUseCase {
   constructor(
     private readonly csvService: CsvService,
     private readonly userDbDataSource: UserDbDataSource,
@@ -86,38 +84,41 @@ export class CsvUseCase {
   }
 
   storeData(csvData: CsvInputModel[]) {
-    const csvUsers: UserInputModel[] = [];
-    const csvAddress: AddressInput[] = [];
-    const originalPasswords: string[] = [];
+    return csvData.reduce(
+      (previous, user: CsvInputModel) => {
+        const newCsvUser = {
+          name: user.name,
+          email: user.email,
+          password: generatePassword({ length: 12 }),
+          birthDate: user.birthDate,
+        };
 
-    csvData.forEach((user: CsvInputModel) => {
-      const newCsvUser = {
-        name: user.name,
-        email: user.email,
-        password: generatePassword(12),
-        birthDate: user.birthDate,
-      };
+        const newCsvAddress = {
+          cep: user.cep,
+          city: user.city,
+          state: user.state,
+          neighborhood: user.neighborhood,
+          street: user.street,
+          streetNumber: user.streetNumber,
+          complement: user.complement,
+        };
 
-      const newCsvAddress = {
-        cep: user.cep,
-        city: user.city,
-        state: user.state,
-        neighborhood: user.neighborhood,
-        street: user.street,
-        streetNumber: user.streetNumber,
-        complement: user.complement,
-      };
+        previous.csvUsers.push(newCsvUser);
+        previous.originalPasswords.push(newCsvUser.password);
+        previous.csvAddress.push(newCsvAddress);
 
-      csvUsers.push(newCsvUser);
-      originalPasswords.push(newCsvUser.password);
-      csvAddress.push(newCsvAddress);
-    });
-    return { csvUsers, csvAddress, originalPasswords };
+        return previous;
+      },
+      {
+        csvUsers: [],
+        csvAddress: [],
+        originalPasswords: [],
+      },
+    );
   }
 
   async sendEmails(csvData: CsvInputModel[], passwords: string[]): Promise<void> {
     for (const [i, user] of csvData.entries()) {
-      // await this.emailService.sendEmail(user.name, user.email, passwords[i]);
       console.log(`email sent to ${user.name} new password: ${passwords[i]}`);
     }
   }

@@ -40,7 +40,7 @@ describe('Address mutation test', function () {
     });
 
     const testToken = jwt.sign({ id: testUser.id }, process.env.SECRET_KEY ?? '', { expiresIn: '1h' });
-    const response = await axiosPost<AddressVariable>(addressMutation.query, variables, testToken);
+    const response = await axiosPost<AddressVariable>({ query: addressMutation.query, variables, token: testToken });
 
     const addressInBank = await prisma.address.findMany({
       where: {
@@ -74,7 +74,7 @@ describe('Address mutation test', function () {
   });
 
   it('should return errors while trying to create an address with a user that is not in the database', async () => {
-    const response = await axiosPost<AddressVariable>(addressMutation.query, variables, fakeToken);
+    const response = await axiosPost<AddressVariable>({ query: addressMutation.query, variables, token: fakeToken });
 
     expect(response.data).to.have.property('errors');
     const responseData = response.data.errors[0];
@@ -95,7 +95,11 @@ describe('Address mutation test', function () {
       },
     };
 
-    const response = await axiosPost<AddressVariable>(addressMutation.query, wrongVariables, fakeToken);
+    const response = await axiosPost<AddressVariable>({
+      query: addressMutation.query,
+      variables: wrongVariables,
+      token: fakeToken,
+    });
 
     expect(response.data).to.have.property('errors');
     const responseData = response.data.errors[0];
@@ -122,7 +126,11 @@ describe('Address mutation test', function () {
   });
 
   it('should return an error if a malformed token is provided', async () => {
-    const response = await axiosPost<AddressVariable>(addressMutation.query, variables, 'malformed token');
+    const response = await axiosPost<AddressVariable>({
+      query: addressMutation.query,
+      variables,
+      token: 'malformed token',
+    });
     const responseData = response.data.errors[0];
     expect(responseData.message).to.equal('INVALID_SESSION_TOKEN: Error invalid or expired token');
     expect(responseData.additionalInfo.name).to.equal('JsonWebTokenError');
@@ -131,7 +139,7 @@ describe('Address mutation test', function () {
   });
 
   it('should return an error if no token is provided', async () => {
-    const response = await axiosPost<AddressVariable>(addressMutation.query, variables);
+    const response = await axiosPost<AddressVariable>({ query: addressMutation.query, variables });
 
     const responseData = response.data.errors[0];
 

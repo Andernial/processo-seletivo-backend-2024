@@ -48,7 +48,8 @@ describe('User Query test', function () {
     const variables = {
       userId: testUser.id,
     };
-    const response = await axiosPost<UserVariable>(userQuery.query, variables, testToken);
+    const response = await axiosPost<UserVariable>({ query: userQuery.query, token: testToken, variables });
+
     const responseUser = response.data.data.user.userData;
     const responseAddress = response.data.data.user.address[0];
     expect(responseUser).to.have.all.keys('name', 'email', 'birthDate', 'id');
@@ -84,7 +85,7 @@ describe('User Query test', function () {
     const variables = {
       userId: testUser.id,
     };
-    const response = await axiosPost<UserVariable>(userQuery.query, variables, testToken);
+    const response = await axiosPost<UserVariable>({ query: userQuery.query, token: testToken, variables });
 
     const responseUser = response.data.data.user.userData;
     const responseAddress = response.data.data.user.address;
@@ -103,7 +104,7 @@ describe('User Query test', function () {
       userId: 90000,
     };
 
-    const response = await axiosPost<UserVariable>(userQuery.query, variables, testToken);
+    const response = await axiosPost<UserVariable>({ query: userQuery.query, token: testToken, variables });
 
     const responseData = response.data.errors[0];
     expect(responseData.message).to.equal('USER_NOT_FOUND: Could not find user with the provided id!');
@@ -116,7 +117,7 @@ describe('User Query test', function () {
       userId: testUser.id,
     };
 
-    const response = await axiosPost(userQuery.query, variables);
+    const response = await axiosPost<UserVariable>({ query: userQuery.query, variables });
 
     const responseData = response.data.errors[0];
     expect(responseData.message).to.equal('ACCESS_DENIED: You need to be logged in to access this query');
@@ -128,7 +129,7 @@ describe('User Query test', function () {
       userId: testUser.id,
     };
 
-    const response = await axiosPost<UserVariable>(userQuery.query, variables, 'wrong token');
+    const response = await axiosPost<UserVariable>({ query: userQuery.query, token: 'malformed token', variables });
 
     const responseData = response.data.errors[0];
     expect(responseData.message).to.equal('INVALID_SESSION_TOKEN: Error invalid or expired token');

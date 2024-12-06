@@ -1,12 +1,14 @@
 import axios from 'axios';
 import FormData from 'form-data';
 
-export async function axiosPost<Tvariables>(
-  query: string,
-  variables?: Tvariables,
-  token?: string,
-  formData?: FormData,
-) {
+interface AxiosOptions<Tvariables> {
+  query: string;
+  token?: string;
+  formData?: FormData;
+  variables?: Tvariables;
+}
+
+export async function axiosPost<Tvariables>({ query, token, formData, variables }: AxiosOptions<Tvariables>) {
   try {
     let headers;
     const url = `http://localhost:${process.env.PORT}/graphql`;

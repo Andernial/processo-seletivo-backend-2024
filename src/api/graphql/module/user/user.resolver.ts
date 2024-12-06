@@ -4,7 +4,7 @@ import { FileUpload, GraphQLUpload } from 'graphql-upload-ts';
 import { LoginInputModel, LoginModel, UserInputModel, UserModel, UserQueryModel, UsersQueryModel } from '@domain/model';
 import { UsersQuery, UserQuery, User } from './type';
 import { PaginationInput } from './input';
-import { UsersUseCase, UserUseCase, CreateUserUseCase, LoginUseCase, CsvUseCase } from '@domain/user';
+import { UsersUseCase, UserUseCase, CreateUserUseCase, LoginUseCase, CreateManyUsersUseCase } from '@domain/user';
 import { UserInput } from './input/user.input';
 import { Login } from './type/login.type';
 import { LoginInput } from './input/login.input';
@@ -17,7 +17,7 @@ export class UserResolver {
     private readonly usersUseCase: UsersUseCase,
     private readonly createUserUseCase: CreateUserUseCase,
     private readonly loginUseCase: LoginUseCase,
-    private readonly csvUseCase: CsvUseCase,
+    private readonly csvUseCase: CreateManyUsersUseCase,
   ) {}
 
   @Query(() => UserQuery)

@@ -16,7 +16,7 @@ describe('Csv Mutation Test', function () {
 
     const formData = appendFormData(file, csvMutation.query);
 
-    const response = await axiosPost<null>(csvMutation.query, null, null, formData);
+    const response = await axiosPost({ query: csvMutation.query, formData });
 
     const createdUsers = await prisma.user.findMany();
 
@@ -39,7 +39,7 @@ describe('Csv Mutation Test', function () {
 
     const formData = appendFormData(file, csvMutation.query);
 
-    const response = await axiosPost<null>(csvMutation.query, null, null, formData);
+    const response = await axiosPost({ query: csvMutation.query, formData });
 
     const createdUsers = await prisma.user.findMany();
 
@@ -55,7 +55,7 @@ describe('Csv Mutation Test', function () {
 
     const formData = appendFormData(file, csvMutation.query);
 
-    const response = await axiosPost<null>(csvMutation.query, null, null, formData);
+    const response = await axiosPost({ query: csvMutation.query, formData });
 
     const createdUsers = await prisma.user.findMany();
 
@@ -81,7 +81,7 @@ describe('Csv Mutation Test', function () {
 
     const formData = appendFormData(file, csvMutation.query);
 
-    const response = await axiosPost<null>(csvMutation.query, null, null, formData);
+    const response = await axiosPost({ query: csvMutation.query, formData });
 
     const createdUsers = await prisma.user.findMany();
 
@@ -96,7 +96,7 @@ describe('Csv Mutation Test', function () {
 
     const formData = appendFormData(file, csvMutation.query);
 
-    const response = await axiosPost<null>(csvMutation.query, null, null, formData);
+    const response = await axiosPost({ query: csvMutation.query, formData });
 
     const createdUsers = await prisma.user.findMany();
 
