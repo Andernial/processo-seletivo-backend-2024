@@ -1,4 +1,4 @@
-import { CsvInputModel, estados } from '@domain/model';
+import { CsvInputModel, States } from '@domain/model';
 import { IsEmail, IsEnum, IsISO8601, IsNotEmpty, IsOptional, Length, MaxLength, MinLength } from 'class-validator';
 
 export class CsvInpuValidation implements CsvInputModel {
@@ -34,7 +34,7 @@ export class CsvInpuValidation implements CsvInputModel {
   @IsNotEmpty({ message: 'O campo cidade não pode ser vazio' })
   city: string;
 
-  @IsEnum(estados, { message: `Selecione um dos estados do Brasil! opções: ${Object.values(estados).join(' | ')}` })
+  @IsEnum(States, { message: `Selecione um dos estados do Brasil! opções: ${Object.values(States).join(' | ')}` })
   state: string;
 
   constructor(data?: CsvInpuValidation) {
