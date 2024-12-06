@@ -66,18 +66,20 @@ export class CsvUseCase {
 
   async validateCsvData(csvData: CsvInputModel[]): Promise<unknown[]> {
     const errorConstraints: unknown[] = [];
-    for (const user of csvData) {
-      const csvInput = new CsvInpuValidation(user);
+    const csvInput = new CsvInpuValidation();
 
+    for (const [i, user] of csvData.entries()) {
+      csvInput.updateData(user);
       const errors = await validate(csvInput, { stopAtFirstError: true });
+
       if (errors.length > 0) {
-        const errorMessages = errors.map((error, index: number) => ({
-          user: `User${index + 1}`,
+        const errorMessages = errors.map((error) => ({
+          user: `User${i + 1}`,
           property: error.property,
           constraints: error.constraints,
         }));
 
-        errorConstraints.push(errorMessages);
+        errorConstraints.push(...errorMessages);
       }
     }
     return errorConstraints;

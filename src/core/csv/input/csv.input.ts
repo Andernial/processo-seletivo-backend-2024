@@ -37,7 +37,13 @@ export class CsvInpuValidation implements CsvInputModel {
   @IsEnum(estados, { message: `Selecione um dos estados do Brasil! opções: ${Object.values(estados).join(' | ')}` })
   state: string;
 
-  constructor(data: CsvInpuValidation) {
+  constructor(data?: CsvInpuValidation) {
+    if (data) {
+      this.updateData(data);
+    }
+  }
+
+  updateData(data: CsvInputModel): void {
     this.name = data.name;
     this.email = data.email;
     this.birthDate = data.birthDate;

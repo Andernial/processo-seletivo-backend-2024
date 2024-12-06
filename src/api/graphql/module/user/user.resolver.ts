@@ -45,7 +45,7 @@ export class UserResolver {
   }
 
   @Mutation(() => String)
-  async uploadCsv(@Arg('file', () => GraphQLUpload) file: FileUpload): Promise<string> {
+  async csvUpload(@Arg('file', () => GraphQLUpload) file: FileUpload): Promise<string> {
     await this.csvUseCase.exec(file);
     return 'Upload realizado com sucesso! Usuários adicionados no banco de dados';
   }

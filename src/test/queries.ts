@@ -94,3 +94,9 @@ export const addressMutation = {
   }
 }`,
 };
+
+export const csvMutation = {
+  query: `mutation UploadCsv($file: Upload!) {
+  csvUpload(file: $file) 
+}`,
+};

@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import { prisma } from '@test/test-server.ts/server-setup.test';
-import { axiosPost } from '@test/utils/request-maker';
+import { axiosPost } from '@test/utils';
 import { userMutation } from '@test/queries';
 import { CreateUserVariable } from '@test/model';
 

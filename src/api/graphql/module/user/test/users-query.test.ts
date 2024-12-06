@@ -5,7 +5,7 @@ import { generateFakeUsers } from '@data/db/seed/seed';
 import { User } from '@prisma/client';
 import { base64Encode } from '@core/utils/encoder-utils';
 import { UserQueryModel } from '@domain/model/user.model';
-import { axiosPost } from '@test/utils/request-maker';
+import { axiosPost } from '@test/utils';
 import { usersQuery } from '@test/queries';
 import { UsersVariable } from '@test/model';
 

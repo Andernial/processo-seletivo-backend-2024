@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import { expect } from 'chai';
 import { Address, User } from '@prisma/client';
 import { userQuery } from '@test/queries';
-import { axiosPost } from '@test/utils/request-maker';
+import { axiosPost } from '@test/utils';
 import { UserVariable } from '@test/model';
 
 let testToken: string;

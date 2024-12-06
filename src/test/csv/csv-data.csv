@@ -1,0 +1,4 @@
+name,email,birthDate,cep,city,state,neighborhood,street,streetNumber,complement 
+João Silva,joao.silva@email.com,1990-01-15,12345-678,São Paulo,São Paulo,Centro,Av. Paulista,101,Apto 10
+Maria Oliveira,maria.oliveira@email.com,1985-06-20,87654-321,Rio de Janeiro,São Paulo,Zona Sul,Rua das Flores,202,
+Carlos Souza,carlos.souza@email.com,1992-11-05,54321-098,Curitiba,São Paulo,Batel,Alameda Cabral,303,Casa 3

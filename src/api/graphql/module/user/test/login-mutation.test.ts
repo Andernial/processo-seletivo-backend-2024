@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import { prisma } from '@test/test-server.ts/server-setup.test';
 import { formatTokenDate, returnExpirationDate } from '@core/utils';
 import { loginMutation } from '@test/queries';
-import { axiosPost } from '@test/utils/request-maker';
+import { axiosPost } from '@test/utils';
 import { LoginVariable } from '@test/model';
 
 let userId: number;

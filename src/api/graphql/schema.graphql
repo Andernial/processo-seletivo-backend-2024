@@ -73,8 +73,8 @@ input LoginInput {
 type Mutation {
   createAddress(data: AddressInput!): Address!
   createUser(data: UserInput!): User!
+  csvUpload(file: Upload!): String!
   login(data: LoginInput!): Login!
-  uploadCsv(file: Upload!): String!
 }
 
 """page info response object"""
