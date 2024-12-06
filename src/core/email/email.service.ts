@@ -24,7 +24,7 @@ export class EmailService {
     });
 
     if (error) {
-      throw new DataSourceError('INTERNAL_SERVER_ERROR: Something went wrong while sending the email!');
+      throw new DataSourceError('DATA_SOURCE_ERROR: Something went wrong while sending the email!');
     }
   }
 }
