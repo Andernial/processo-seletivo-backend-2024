@@ -17,8 +17,22 @@ export class UserDbDataSource {
     return await dbClient.user.create({ data });
   }
 
+  async insertMany(data: UserInputModel[]): Promise<UserModel[]> {
+    return dbClient.user.createManyAndReturn({ data });
+  }
+
   findOneByEmail(email: string): Promise<UserModelWithPassword> {
     return dbClient.user.findUnique({ where: { email } });
+  }
+
+  findManyByEmail(emails: string[]) {
+    return dbClient.user.findMany({
+      where: {
+        email: {
+          in: emails,
+        },
+      },
+    });
   }
 
   findById(id: number): Promise<UserAddressModel> {

@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import { prisma } from '@test/test-server.ts/server-setup.test';
 import { formatTokenDate, returnExpirationDate } from '@core/utils';
 import { loginMutation } from '@test/queries';
-import { axiosPost } from '@test/utils/request-maker';
+import { axiosPost } from '@test/utils';
 import { LoginVariable } from '@test/model';
 
 let userId: number;
@@ -39,7 +39,7 @@ describe('Login mutation Tests', function () {
         password: '45687a',
       },
     };
-    const response = await axiosPost<LoginVariable>(loginMutation.query, variables);
+    const response = await axiosPost<LoginVariable>({ query: loginMutation.query, variables });
 
     const { expirationDateTokenTrue } = returnExpirationDate();
     const responseData = response.data.data.login;
@@ -65,7 +65,7 @@ describe('Login mutation Tests', function () {
         password: '45687a',
       },
     };
-    const response = await axiosPost<LoginVariable>(loginMutation.query, variables);
+    const response = await axiosPost<LoginVariable>({ query: loginMutation.query, variables });
 
     const { expirationDateTokenFalse } = returnExpirationDate();
     const responseData = response.data.data.login;
@@ -91,7 +91,7 @@ describe('Login mutation Tests', function () {
         password: '45687a',
       },
     };
-    const response = await axiosPost<LoginVariable>(loginMutation.query, variables);
+    const response = await axiosPost<LoginVariable>({ query: loginMutation.query, variables });
 
     expect(response.data).to.have.property('errors');
     const responseData = response.data.errors[0];
@@ -108,7 +108,7 @@ describe('Login mutation Tests', function () {
         password: 'wrongpass',
       },
     };
-    const response = await axiosPost<LoginVariable>(loginMutation.query, variables);
+    const response = await axiosPost<LoginVariable>({ query: loginMutation.query, variables });
 
     expect(response.data).to.have.property('errors');
 

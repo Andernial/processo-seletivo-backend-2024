@@ -36,6 +36,19 @@ export interface UserInputModel {
   birthDate: string;
 }
 
+export interface CsvInputModel {
+  name: string;
+  email: string;
+  birthDate: string;
+  cep: string;
+  street: string;
+  streetNumber: string;
+  complement?: string;
+  neighborhood: string;
+  city: string;
+  state: string;
+}
+
 export interface LoginInputModel {
   email: string;
   password: string;

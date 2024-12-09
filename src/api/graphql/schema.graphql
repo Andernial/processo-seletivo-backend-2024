@@ -73,6 +73,7 @@ input LoginInput {
 type Mutation {
   createAddress(data: AddressInput!): Address!
   createUser(data: UserInput!): User!
+  csvUpload(file: Upload!): String!
   login(data: LoginInput!): Login!
 }
 
@@ -93,6 +94,9 @@ type Query {
   user(id: Int!): UserQuery!
   users(data: PaginationInput): UsersQuery!
 }
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
 
 """The user model"""
 type User {

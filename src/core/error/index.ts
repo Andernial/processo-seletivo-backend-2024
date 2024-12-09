@@ -3,3 +3,4 @@ export * from './custom-error.error';
 export * from './not-found.error';
 export * from './already-exist.error';
 export * from './invalid-data.error';
+export * from './datasoure.error';

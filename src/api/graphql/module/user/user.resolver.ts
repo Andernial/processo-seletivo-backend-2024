@@ -1,14 +1,12 @@
 import { Arg, Authorized, Int, Mutation, Query, Resolver } from 'type-graphql';
 import { Service } from 'typedi';
+import { FileUpload, GraphQLUpload } from 'graphql-upload-ts';
 import { LoginInputModel, LoginModel, UserInputModel, UserModel, UserQueryModel, UsersQueryModel } from '@domain/model';
 import { UsersQuery, UserQuery, User } from './type';
 import { PaginationInput } from './input';
-import { UserUseCase } from '@domain/user/user.use-case';
-import { UsersUseCase } from '@domain/user/users.use-case';
-import { CreateUserUseCase } from '@domain/user';
+import { UsersUseCase, UserUseCase, CreateUserUseCase, LoginUseCase, CreateManyUsersUseCase } from '@domain/user';
 import { UserInput } from './input/user.input';
 import { Login } from './type/login.type';
-import { LoginUseCase } from '@domain/user/login.use-case';
 import { LoginInput } from './input/login.input';
 
 @Service()
@@ -19,6 +17,7 @@ export class UserResolver {
     private readonly usersUseCase: UsersUseCase,
     private readonly createUserUseCase: CreateUserUseCase,
     private readonly loginUseCase: LoginUseCase,
+    private readonly csvUseCase: CreateManyUsersUseCase,
   ) {}
 
   @Query(() => UserQuery)
@@ -43,5 +42,11 @@ export class UserResolver {
   @Mutation(() => Login)
   async login(@Arg('data', () => LoginInput) input: LoginInputModel): Promise<LoginModel> {
     return await this.loginUseCase.exec(input);
+  }
+
+  @Mutation(() => String)
+  async csvUpload(@Arg('file', () => GraphQLUpload) file: FileUpload): Promise<string> {
+    await this.csvUseCase.exec(file);
+    return 'Upload realizado com sucesso! Usuários adicionados no banco de dados';
   }
 }

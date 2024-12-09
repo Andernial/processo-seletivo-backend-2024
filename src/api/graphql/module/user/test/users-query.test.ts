@@ -5,7 +5,7 @@ import { generateFakeUsers } from '@data/db/seed/seed';
 import { User } from '@prisma/client';
 import { base64Encode } from '@core/utils/encoder-utils';
 import { UserQueryModel } from '@domain/model/user.model';
-import { axiosPost } from '@test/utils/request-maker';
+import { axiosPost } from '@test/utils';
 import { usersQuery } from '@test/queries';
 import { UsersVariable } from '@test/model';
 
@@ -37,7 +37,7 @@ describe('Users Query Test', function () {
   });
 
   it('should successfully return users if a valid token is sent', async () => {
-    const response = await axiosPost(usersQuery.query, undefined, testToken);
+    const response = await axiosPost({ query: usersQuery.query, token: testToken });
 
     const testUsers = await prisma.user.findMany({
       orderBy: [{ name: 'asc' }, { id: 'asc' }],
@@ -107,7 +107,11 @@ describe('Users Query Test', function () {
       },
     };
 
-    const response = await axiosPost<UsersVariable>(usersQuery.query, variables, testToken);
+    const response = await axiosPost<UsersVariable>({
+      query: usersQuery.query,
+      token: testToken,
+      variables,
+    });
 
     const testUsers = await prisma.user.findMany({
       orderBy: [{ name: 'asc' }, { id: 'asc' }],
@@ -178,7 +182,11 @@ describe('Users Query Test', function () {
       },
     };
 
-    const response = await axiosPost<UsersVariable>(usersQuery.query, variables, testToken);
+    const response = await axiosPost<UsersVariable>({
+      query: usersQuery.query,
+      token: testToken,
+      variables,
+    });
 
     const testUsers = await prisma.user.findMany({
       orderBy: [{ name: 'asc' }, { id: 'asc' }],
@@ -212,7 +220,10 @@ describe('Users Query Test', function () {
   it('should return the an empty array of users if no users are found', async () => {
     await prisma.user.deleteMany();
 
-    const response = await axiosPost(usersQuery.query, undefined, testToken);
+    const response = await axiosPost<UsersVariable>({
+      query: usersQuery.query,
+      token: testToken,
+    });
 
     const responseUsersData = response.data.data.users.usersData;
     const responsePageInfo = response.data.data.users.pageInfo;
@@ -232,7 +243,11 @@ describe('Users Query Test', function () {
       },
     };
 
-    const response = await axiosPost<UsersVariable>(usersQuery.query, variables, testToken);
+    const response = await axiosPost({
+      query: usersQuery.query,
+      token: testToken,
+      variables,
+    });
 
     const responseData = response.data.errors[0];
     expect(responseData).to.have.all.keys('message', 'code', 'additionalInfo');
@@ -242,7 +257,7 @@ describe('Users Query Test', function () {
   });
 
   it('should return an error if no token is provided', async () => {
-    const response = await axiosPost(usersQuery.query, undefined);
+    const response = await axiosPost({ query: usersQuery.query });
 
     const responseData = response.data.errors[0];
 
@@ -252,7 +267,10 @@ describe('Users Query Test', function () {
   });
 
   it('should return an error if a malformed token is provided', async () => {
-    const response = await axiosPost(usersQuery.query, undefined, 'malformed token');
+    const response = await axiosPost({
+      query: usersQuery.query,
+      token: 'malformed token',
+    });
     const responseData = response.data.errors[0];
     expect(responseData).to.have.all.keys('message', 'code', 'additionalInfo');
     expect(responseData.message).to.equal('INVALID_SESSION_TOKEN: Error invalid or expired token');

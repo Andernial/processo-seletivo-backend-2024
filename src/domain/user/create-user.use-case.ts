@@ -1,7 +1,7 @@
 import { AlreadyExistsError } from '@core/error';
-import { hashPassword } from '@core/security/crypto/crypto';
 import { UserDbDataSource } from '@data/user/user.db.datasource';
 import { UserInputModel, UserModel } from '@domain/model';
+import { hashPassword } from '@core/security/crypto';
 import { Service } from 'typedi';
 
 @Service()

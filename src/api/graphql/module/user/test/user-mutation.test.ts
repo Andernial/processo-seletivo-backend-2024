@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import { prisma } from '@test/test-server.ts/server-setup.test';
-import { axiosPost } from '@test/utils/request-maker';
+import { axiosPost } from '@test/utils';
 import { userMutation } from '@test/queries';
 import { CreateUserVariable } from '@test/model';
 
@@ -20,7 +20,7 @@ describe('User Mutation Test', function () {
   });
 
   it('should create a user using axios request', async () => {
-    const response = await axiosPost<CreateUserVariable>(userMutation.query, variables);
+    const response = await axiosPost<CreateUserVariable>({ query: userMutation.query, variables });
 
     const userInBank = await prisma.user.findUnique({
       where: {
@@ -46,7 +46,7 @@ describe('User Mutation Test', function () {
       },
     });
 
-    const response = await axiosPost<CreateUserVariable>(userMutation.query, variables);
+    const response = await axiosPost<CreateUserVariable>({ query: userMutation.query, variables });
 
     const responseData = response.data.errors[0];
     expect(responseData.message).to.equal('Registration Failed: the providen email is already taken!');
@@ -64,7 +64,7 @@ describe('User Mutation Test', function () {
       },
     };
 
-    const response = await axiosPost<CreateUserVariable>(userMutation.query, wrongVariables);
+    const response = await axiosPost<CreateUserVariable>({ query: userMutation.query, variables: wrongVariables });
     expect(response.data).to.have.property('errors');
     const responseData = response.data.errors[0];
     const responseExtensions = responseData.additionalInfo;
